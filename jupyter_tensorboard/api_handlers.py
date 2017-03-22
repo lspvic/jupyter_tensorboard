@@ -4,64 +4,60 @@ import json
 import os
 
 from tornado import web
-from notebook.base.handlers import APIHandler
+from notebook.base.handlers import APIHandler, json_errors
 
 from .handlers import notebook_dir
 
 
 def _trim_notebook_dir(dir):
-    if not dir.startswith("/"):
-        return os.path.join(
-            "<notebook_dir>", os.path.relpath(dir, notebook_dir)
-        )
-    return dir
+    return os.path.join("<notebook_dir>", os.path.relpath(dir, notebook_dir))
 
 
 class TbRootHandler(APIHandler):
 
+    @json_errors
     @web.authenticated
     def get(self):
         terms = [
             {
-                'name': entry.name,
-                'logdir': _trim_notebook_dir(entry.logdir),
-                "reload_time": entry.thread.reload_time,
-            } for entry in
+                'name': name,
+                'logdir': _trim_notebook_dir(logdir)
+            } for name, logdir, *_ in
             self.settings["tensorboard_manager"].values()
         ]
         self.finish(json.dumps(terms))
 
+    @json_errors
     @web.authenticated
     def post(self):
         data = self.get_json_body()
-        reload_interval = data.get("reload_interval", None)
-        entry = (
+        name, logdir, *_ = (
             self.settings["tensorboard_manager"]
-            .new_instance(data["logdir"], reload_interval=reload_interval)
+            .new_instance(data["logdir"])
         )
-        self.finish(json.dumps({
-                'name': entry.name,
-                'logdir':  _trim_notebook_dir(entry.logdir),
-                'reload_time': entry.thread.reload_time}))
+
+        self.finish(json.dumps(
+            {'name': name, 'logdir': _trim_notebook_dir(logdir)}))
 
 
 class TbInstanceHandler(APIHandler):
 
     SUPPORTED_METHODS = ('GET', 'DELETE')
 
+    @json_errors
     @web.authenticated
     def get(self, name):
         manager = self.settings["tensorboard_manager"]
         if name in manager:
-            entry = manager[name]
+            name, logdir, *_ = manager[name]
             self.finish(json.dumps({
-                'name': entry.name,
-                'logdir':  _trim_notebook_dir(entry.logdir),
-                'reload_time': entry.thread.reload_time}))
+                'name': name,
+                'logdir':  _trim_notebook_dir(logdir)}))
         else:
             raise web.HTTPError(
                 404, "TensorBoard instance not found: %r" % name)
 
+    @json_errors
     @web.authenticated
     def delete(self, name):
         manager = self.settings["tensorboard_manager"]

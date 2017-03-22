@@ -2,18 +2,17 @@
 
 from .handlers import load_jupyter_server_extension   # noqa
 
-__version__ = "0.2.0"
+__version__ = "0.1"
 
 
 def _jupyter_nbextension_paths():
-    name = __name__
     section = "tree"
     src = "static"
     return [dict(
         section=section,
         src=src,
-        dest=name,
-        require="%s/%s" % (name, section))]
+        dest=__name__,
+        require="%s/%s" % (__name__, section))]
 
 
 def _jupyter_server_extension_paths():
