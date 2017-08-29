@@ -6,13 +6,14 @@ __version__ = "0.1.1.dev0"
 
 
 def _jupyter_nbextension_paths():
+    name = __name__
     section = "tree"
     src = "static"
     return [dict(
         section=section,
         src=src,
-        dest=__name__,
-        require="%s/%s" % (__name__, section))]
+        dest=name,
+        require="%s/%s" % (name, section))]
 
 
 def _jupyter_server_extension_paths():

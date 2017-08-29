@@ -33,7 +33,8 @@ setup(
     author_email='lspvic@qq.com',
     url='http://github.com/lspvic/jupyter_tensorboard',
     license='MIT License',
-    description=('Start tensorboard in Jupyter! '
+    description=(
+        'Start tensorboard in Jupyter! '
         'Jupyter notebook integration for tensorboard'),
     long_description=read("README.rst"),
     keywords=['Jupyter', 'Notebook', 'Tensorboard', 'Tensorflow', ],
@@ -50,7 +51,6 @@ setup(
     ]],
     install_requires=[
         'notebook>=5.0',
-        'tensorflow-tensorboard<0.2.0,>=0.1.0',
     ],
     classifiers=[
         'Intended Audience :: Developers',
@@ -59,5 +59,8 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )
