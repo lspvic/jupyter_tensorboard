@@ -1,6 +1,8 @@
 Jupyter-Tensorboard: Start tensorboard in Jupyter notebook
 =================================================================
 
+|build-status| |pypi-status| |pypi-pyversions|
+
 Tensorboard Integration for Jupyter Notebook.
 
 A jupyter server extension for jupyter notebook and tensorboard (a visualization tool for tensorflow) which provides graphical user interface for tensorboard start, manage and stop in jupyter interface.
@@ -8,18 +10,25 @@ A jupyter server extension for jupyter notebook and tensorboard (a visualization
 Installation
 ------------
 
-1.  Install the pip package. This should be as simple as
+#.  Be sure that tensorflow(-gpu)>=1.3.0 has been installed. If not, you should install or upgrade your tensorflow>=1.3.0 first, and tensorbaord is a dependency of tensorflow so that it is automatically installed. This package does not have a tensorbaord or tensorflow dependency because there are several versions of tensorflow, for example, tensorflow and tensorflow-gpu, if jupyter_tensorboard requires any version of the tensorflow, it will install the version and abrupt the environment. Any way, you must be sure you have tensorflow(-gpu) installed before install this package.
 
-    ``pip install jupyter_tensorboard``
+#.  Install the pip package. The python version must be the same as Jupyter: if you start jupyter notebook in python3, ``pip3`` may be used to install the package
 
-2.  Enabling the notebook server to load the server extension. A `jupyter` subcommand is provided for this. You can enable the serverextension and the configurator nbextensions listed below for the current user with
+    ``pip(3) install jupyter_tensorboard``
+
+    **NOTE:**
+
+    The python version are important, you must be sure that your *jupyter*, *jupyter_tensorboard*, *tensorflow* have the same python version. If your tensorflow python and jupyter python versions are different, e.g., use tensorflow in py2 but jupyter starts in py3, both versions of tensorflow(py2 and py3) should be installed, and jupyter_tensorboard should install to py3, in accordance with jupyter.
+
+#.  Enabling the notebook server to load the server extension. A `jupyter` subcommand is provided for this. You can enable the serverextension and the configurator nbextensions listed below for the current user with
 
     ``jupyter tensorboard enable --user``
 
 
-The command accepts the same flags as the ``jupyter serverextension`` command provided by notebook versions >= 5.0, including ``--system`` to enable in system-wide config (the default), or ``--sys-prefix`` to enable in config files inside python's ``sys.prefix``, such as for a virtual environment. The provided ``jupyter tensorboard`` command can also be used to ``disable``.
+    The command accepts the same flags as the ``jupyter serverextension`` command provided by notebook versions >= 5.0, including ``--system`` to enable in system-wide config (the default), or ``--sys-prefix`` to enable in config files inside python's ``sys.prefix``, such as for a virtual environment. The provided ``jupyter tensorboard`` command can also be used to ``disable``.
 
-Once installed, you'll need to restart the notebook server. Once restarted, you should be able to find the tensorboard user interfaces as described below.
+#.  Restart the jupyter notebook server.
+
 
 Usage
 -----
@@ -53,3 +62,13 @@ For debugging, useful information can (sometimes) be found by:
 
 * Checking for error messages in the browser's Javascript console.
 * Checking for messages in the notebook server's logs. This is particularly useful when the server is run with the --debug flag, to get as many logs as possible.
+
+
+.. |build-status| image:: https://img.shields.io/travis/lspvic/jupyter_tensorboard.svg
+    :target: https://travis-ci.org/lspvic/jupyter_tensorboard
+
+.. |pypi-status| image:: https://img.shields.io/pypi/v/jupyter_tensorboard.svg
+    :target: https://pypi.python.org/pypi/jupyter_tensorboard
+
+.. |pypi-pyversions| image:: https://img.shields.io/pypi/pyversions/jupyter_tensorboard.svg
+    :target: https://pypi.python.org/pypi/jupyter_tensorboard

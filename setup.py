@@ -1,94 +1,92 @@
-"""
-jupyterlab_tensorboard setup
-"""
-import json
-from pathlib import Path
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from jupyter_packaging import (
-    create_cmdclass,
-    install_npm,
-    ensure_targets,
-    combine_commands,
-    skip_if_exists
-)
-import setuptools
+import os
+import io
+import re
+from setuptools import setup
 
-HERE = Path(__file__).parent.resolve()
 
-# The name of the project
-name = "jupyterlab_tensorboard"
+def read(*names, **kwargs):
+    with io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get("encoding", "utf8")
+    ) as fp:
+        return fp.read()
 
-lab_path = (HERE / name / "labextension")
 
-# Representative files that should exist after a successful build
-jstargets = [
-    str(lab_path / "package.json"),
-]
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
-package_data_spec = {
-    name: ["*"],
-}
 
-labext_name = "jupyterlab_tensorboard"
+name = 'jupyter_tensorboard'
 
-data_files_spec = [
-    ("share/jupyter/labextensions/%s" % labext_name, str(lab_path), "**"),
-    ("share/jupyter/labextensions/%s" % labext_name, str(HERE), "install.json"),
-]
-
-cmdclass = create_cmdclass("jsdeps",
-    package_data_spec=package_data_spec,
-    data_files_spec=data_files_spec
-)
-
-js_command = combine_commands(
-    install_npm(HERE, build_cmd="build:prod", npm=["jlpm"]),
-    ensure_targets(jstargets),
-)
-
-is_repo = (HERE / ".git").exists()
-if is_repo:
-    cmdclass["jsdeps"] = js_command
-else:
-    cmdclass["jsdeps"] = skip_if_exists(jstargets, js_command)
-
-long_description = (HERE / "README.md").read_text()
-
-# Get the package info from package.json
-pkg_json = json.loads((HERE / "package.json").read_bytes())
-
-setup_args = dict(
+setup(
     name=name,
-    version=pkg_json["version"],
-    url=pkg_json["homepage"],
-    author=pkg_json["author"]["name"],
-    author_email=pkg_json["author"]["email"],
-    description=pkg_json["description"],
-    license=pkg_json["license"],
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    cmdclass=cmdclass,
-    packages=setuptools.find_packages(),
-    install_requires=[
-        "jupyterlab~=3.0",
-    ],
-    zip_safe=False,
-    include_package_data=True,
-    python_requires=">=3.6",
+    version=find_version(name, '__init__.py'),
+    author='lspvic',
+    author_email='lspvic@qq.com',
+    url='http://github.com/lspvic/jupyter_tensorboard',
+    license='MIT License',
+    description=(
+        'Start tensorboard in Jupyter! '
+        'Jupyter notebook integration for tensorboard'),
+    long_description=read("README.rst"),
+    keywords=['Jupyter', 'Notebook', 'Tensorboard', 'Tensorflow', ],
+    packages=[name],
+    package_data={name: ["static/*"]},
     platforms="Linux, Mac OS X, Windows",
-    keywords=["Jupyter", "JupyterLab", "JupyterLab3"],
+    entry_points={
+        'console_scripts': [
+            'jupyter-tensorboard = jupyter_tensorboard.application:main',
+         ],
+    },
+    scripts=[os.path.join('scripts', p) for p in [
+        'jupyter-tensorboard',
+    ]],
+    description=(
+        'Start tensorboard in Jupyter! '
+        'Jupyter notebook integration for tensorboard'),
+    long_description=read("README.rst"),
+    keywords=['Jupyter', 'Notebook', 'Tensorboard', 'Tensorflow', ],
+    packages=[name],
+    package_data={name: ["static/*"]},
+    platforms="Linux, Mac OS X, Windows",
+    entry_points={
+        'console_scripts': [
+            'jupyter-tensorboard = jupyter_tensorboard.application:main',
+         ],
+    },
+    scripts=[os.path.join('scripts', p) for p in [
+        'jupyter-tensorboard',
+    ]],
+    install_requires=[
+        'notebook>=5.0',
+    ],
     classifiers=[
-        "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Framework :: Jupyter",
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'notebook>=5.0',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )
-
-
-if __name__ == "__main__":
-    setuptools.setup(**setup_args)
