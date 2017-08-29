@@ -28,8 +28,10 @@ def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
     def _ReloadForever():
         current_thread = threading.currentThread()
         current_thread.stop = False
+        current_thread.reload_time = None
         while not current_thread.stop:
             application.reload_multiplexer(multiplexer, path_to_run)
+            current_thread.reload_time = time.time()
             time.sleep(reload_interval)
     thread = threading.Thread(target=_ReloadForever)
     thread.daemon = True
@@ -64,14 +66,12 @@ class TensorboardManger(dict):
             if name not in self:
                 return name
 
-    def new_instance(self, logdir):
+    def new_instance(self, logdir, reload_interval):
         if not os.path.isabs(logdir) and notebook_dir:
             logdir = os.path.join(notebook_dir, logdir)
 
         if logdir not in self._logdir_dict:
-
             purge_orphaned_data = True
-            reload_interval = 30
             plugins = [
                 core_plugin.CorePlugin,
                 scalars_plugin.ScalarsPlugin,
@@ -84,13 +84,12 @@ class TensorboardManger(dict):
                 text_plugin.TextPlugin,
                 profile_plugin.ProfilePlugin,
             ]
+            reload_interval = reload_interval or 30
             application.standard_tensorboard_wsgi(
                 logdir=logdir, reload_interval=reload_interval,
                 purge_orphaned_data=purge_orphaned_data, plugins=plugins)
 
-            return self._logdir_dict[logdir]
-        else:
-            return self._logdir_dict[logdir]
+        return self._logdir_dict[logdir]
 
     def add_instance(self, logdir, tb_application, thread):
         name = self._next_available_name()

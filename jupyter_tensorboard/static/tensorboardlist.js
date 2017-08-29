@@ -56,7 +56,9 @@ define([
             </li>');
             
         // tensorboard button when select a directory
-        $(".dynamic-buttons:first").append('<button id="#tensorboard-button" title="Create Tensorboard Instance with selected logdir"  class="tensorboard-button btn btn-default btn-xs">Tensorboard</button>');
+        $(".dynamic-buttons:first").append('<button id="#tensorboard-button"\
+            title="Create Tensorboard Instance with selected logdir"\
+            class="tensorboard-button btn btn-default btn-xs">Tensorboard</button>');
     };
     
     TensorboardList.prototype.bind_events = function () {
@@ -104,7 +106,7 @@ define([
             }
             Jupyter.notebook_list._selection_changed();
     };
-    
+
     TensorboardList.prototype.load_tensorboards = function() {
         var url = utils.url_path_join(this.base_url, 'api/tensorboard');
         utils.ajax(url, {
@@ -124,12 +126,13 @@ define([
             term = this.tensorboads[i];
             item = this.new_item(-1);
             this.add_link(term.name, item);
+            this.add_reload_time(term.reload_time, item);
             this.add_logdir(term.logdir, item);
             this.add_shutdown_button(term.name, item);
         }
         $('#tensorboard_list_header').toggle(data.length === 0);
     };
-    
+
     TensorboardList.prototype.add_link = function(name, item) {
         item.data('term-name', name);
         item.find(".item_name").text("tensorboard/" + name + "/");
@@ -139,17 +142,26 @@ define([
                 utils.encode_uri_components(name), "/"));
         //link.attr('target', IPython._target||'_blank');
         link.attr('target', 'tensorboard' + name);
-        this.add_shutdown_button(name, item);
     };
-    
+
     TensorboardList.prototype.add_logdir = function(logdir, item){
-            var running_indicator = item.find(".item_buttons").text('');
-            var kernel_name = $('<div/>')
-                .addClass('kernel-name')
-                .text(logdir)
-                .appendTo(running_indicator);
+        var running_indicator = item.find(".item_buttons").text('');
+        var kernel_name = $('<div/>')
+            .addClass('kernel-name')
+            .text(logdir)
+            .appendTo(running_indicator);
     };
-    
+
+    TensorboardList.prototype.add_reload_time = function(time, item){
+        if(time == null){
+            item.find(".item_modified").text(" Tensorboard Loading");
+        }else{
+            var reload_time = new Date();
+            reload_time.setTime(time * 1000);
+            item.find(".item_modified").attr("title", "Tensorboard last reload summary files time: " + reload_time.toLocaleString()).text("Last Reload:" + reload_time.toLocaleTimeString());
+        }
+    }
+
     TensorboardList.prototype.add_shutdown_button = function(name, item) {
         var that = this;
         var shutdown_button = $("<button/>").text("Shutdown").addClass("btn btn-xs btn-warning").

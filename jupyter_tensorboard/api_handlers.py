@@ -20,9 +20,10 @@ class TbRootHandler(APIHandler):
     def get(self):
         terms = [
             {
-                'name': name,
-                'logdir': _trim_notebook_dir(logdir)
-            } for name, logdir, *_ in
+                'name': entry.name,
+                'logdir': _trim_notebook_dir(entry.logdir),
+                "reload_time": entry.thread.reload_time,
+            } for entry in
             self.settings["tensorboard_manager"].values()
         ]
         self.finish(json.dumps(terms))
@@ -31,13 +32,15 @@ class TbRootHandler(APIHandler):
     @web.authenticated
     def post(self):
         data = self.get_json_body()
-        name, logdir, *_ = (
+        reload_interval = data.get("reload_interval", None)
+        entry = (
             self.settings["tensorboard_manager"]
-            .new_instance(data["logdir"])
+            .new_instance(data["logdir"], reload_interval=reload_interval)
         )
-
-        self.finish(json.dumps(
-            {'name': name, 'logdir': _trim_notebook_dir(logdir)}))
+        self.finish(json.dumps({
+                'name': entry.name,
+                'logdir':  _trim_notebook_dir(entry.logdir),
+                'reload_time': entry.thread.reload_time}))
 
 
 class TbInstanceHandler(APIHandler):
@@ -49,10 +52,11 @@ class TbInstanceHandler(APIHandler):
     def get(self, name):
         manager = self.settings["tensorboard_manager"]
         if name in manager:
-            name, logdir, *_ = manager[name]
+            entry = manager[name]
             self.finish(json.dumps({
-                'name': name,
-                'logdir':  _trim_notebook_dir(logdir)}))
+                'name': entry.name,
+                'logdir':  _trim_notebook_dir(entry.logdir),
+                'reload_time': entry.thread.reload_time}))
         else:
             raise web.HTTPError(
                 404, "TensorBoard instance not found: %r" % name)
