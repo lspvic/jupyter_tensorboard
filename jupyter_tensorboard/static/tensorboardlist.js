@@ -1,9 +1,10 @@
 define([
     'jquery',
     'base/js/namespace',
+    'base/js/dialog',
     'base/js/utils',
     'tree/js/notebooklist',
-], function($, Jupyter, utils, notebooklist) {
+], function($, Jupyter, dialog, utils, notebooklist) {
     "use strict";
     
     var TensorboardList = function (selector, options) {
@@ -18,6 +19,22 @@ define([
             this.bind_events();
             this.load_tensorboards();
         }
+    };
+
+    var help_information = ["Check that tensorflow(-gpu)>=1.3 is installed.",
+        "Check that jupyter, tensorflow and jupyter_tensorboard have the same python version.",
+        "Check that jupyter_tensorboard is installed via pip list. If you want uninstall this extension, run <span>jupyter nbextension disable jupyter_tensorboard/tree --user</span> and <span>jupyter nbextension uninstall jupyter_tensorboard --user</span>;",
+        "Copy your browser console logs to submit a new issue in <a href='https://github.com/lspvic/jupyter_tensorboard'>https://github.com/lspvic/jupyter_tensorboard</a>",
+    ];
+    var ajax_error = function(){
+        dialog.modal({
+            title : 'Jupyter tensorboard extension error',
+            body : "<ol>" + help_information.map(function(ele){return "<li>" + ele + "</li>";}).join("") + "</ol>",
+            sanitize: false,
+            buttons: {'OK': {'class' : 'btn-primary'}},
+            notebook: Jupyter.notebook,
+            keyboard_manager: Jupyter.keyboard_manager,
+        });
     };
 
     TensorboardList.prototype = Object.create(notebooklist.NotebookList.prototype);
@@ -88,10 +105,7 @@ define([
                         utils.encode_uri_components(name)) + "/";
                     var win = window.open(loc, 'tensorboard' + name);
                 },
-                error : function(jqXHR, status, error){
-                    //w.close();
-                    utils.log_ajax_error(jqXHR, status, error);
-                },
+                error: ajax_error,
             };
             var url = utils.url_path_join(this.base_url, 'api/tensorboard');
             utils.ajax(url, settings);
@@ -114,7 +128,11 @@ define([
             cache: false,
             dataType: "json",
             success: $.proxy(this.tensorboards_loaded, this),
-            error : utils.log_ajax_error
+            statusCode: {
+                404: function(){
+                    $("#tensorboard_list_header").html("<div>Jupyter tensorboard extension error<div style='font-weight:normal;'><ol style='margin-top:13px;padding-left:20px;'>" + help_information.map(function(ele){return "<li>" + ele + "</li>";}).join("") + "</ol></div></div>")
+                }
+            }
         });
     };
 
