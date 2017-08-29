@@ -1,0 +1,4 @@
+-e .
+tensorflow>=1.3
+flake8
+pytest
