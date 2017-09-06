@@ -35,7 +35,7 @@ setup(
     license='MIT License',
     description=(
         'Start tensorboard in Jupyter! '
-        'Jupyter notebook integration for tensorboard'),
+        'Jupyter notebook integration for tensorboard.'),
     long_description=read("README.rst"),
     keywords=['Jupyter', 'Notebook', 'Tensorboard', 'Tensorflow', ],
     packages=[name],
