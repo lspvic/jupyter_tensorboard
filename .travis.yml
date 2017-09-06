@@ -7,12 +7,10 @@ python:
   - "3.6"
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
+  - pip install tox-travis
 # command to run tests
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == "3.6" ]]; then flake8; fi
-  - jupyter tensorboard enable --user
-  - pytest
+  - tox
 notifications:
   email: false
 deploy:
@@ -22,5 +20,5 @@ deploy:
     secure: b4lvi3Bs52SLWvmj+YXK4QsjGDSPZtGKxvX89ku7ZRHo14BXLfiDEpP7LrGDrHdAF5nHrJqOE71haa3ClVsCtCuzyyYGKuWU3rNGfxpXOCWJ/5ZakEJSXNuGkmrAdje+aTML81p3CNVFQ0aaNAk01etVigewVM5idlNBKEC0acLEN0ifgyPocacFfSDhZ0BPIfL4kgdQBVc1FjJQp3+XH0Ix5CkV4nB58EZf5gBBoorXkdSsSu8itEVVFjpvbWeFRGLuv51fmJMdNmBHZvc7TUiwrGOzhUaPXtM1BTqJ7tOSNqm70SgTBWljlnvbueiQCDjryoHjMHtCC4sbZh/RQMpu3Gol2nM0ZjkoKf1NPGUvY5+Mx+vuJXVFI77DLFkG1IgmG7M/utMolpba10UMd23fn9HflakK9qVTiOzRSXoz/30IKDYBx0ViT7k4FWg9HhvfFjAhTD4RpqN8yMcZ5TkcjXKzR9nedNrkyM6GrGYQeDIqJwbgZEbfHynt74FajmQtp2Vgs6fw6LrHBvF/YU6s4oaLlEZdiEjsuiFFTS+818HZ8vU/TwF57Hz9FxGCtboOKoA6gqh/FW7797fZqkfzhPVX7vYnsogWXvAKR6WXi0SZGkSptJgEsc8M6ZDnWHTlpyfAFTtl+nKkEePEkisbJQps/KcQu5daBU5FMp4=
   distributions: "sdist bdist_wheel"
   on:
-    tags: true
+    branch: release
     python: "3.6"
