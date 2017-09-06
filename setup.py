@@ -49,36 +49,11 @@ setup(
     scripts=[os.path.join('scripts', p) for p in [
         'jupyter-tensorboard',
     ]],
-    description=(
-        'Start tensorboard in Jupyter! '
-        'Jupyter notebook integration for tensorboard'),
-    long_description=read("README.rst"),
-    keywords=['Jupyter', 'Notebook', 'Tensorboard', 'Tensorflow', ],
-    packages=[name],
-    package_data={name: ["static/*"]},
-    platforms="Linux, Mac OS X, Windows",
-    entry_points={
-        'console_scripts': [
-            'jupyter-tensorboard = jupyter_tensorboard.application:main',
-         ],
-    },
-    scripts=[os.path.join('scripts', p) for p in [
-        'jupyter-tensorboard',
-    ]],
     install_requires=[
         'notebook>=5.0',
+        'tensorflow-tensorboard>=0.1.5',
     ],
     classifiers=[
-        'Intended Audience :: Developers',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'notebook>=5.0',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
