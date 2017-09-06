@@ -1,7 +1,7 @@
 Jupyter-Tensorboard: Start tensorboard in Jupyter notebook
 =================================================================
 
-|build-status| |pypi-status| |pypi-pyversions|
+|build-status| |pypi-status| |pypi-pyversions| |docker-stars|
 
 Tensorboard Integration for Jupyter Notebook.
 
@@ -10,18 +10,29 @@ A jupyter server extension for jupyter notebook and tensorboard (a visualization
 Installation
 ------------
 
-#.  Be sure that tensorflow(-gpu)>=1.3.0 has been installed. If not, you should install or upgrade your tensorflow>=1.3.0 first, and tensorboard is a dependency of tensorflow so that it is automatically installed. This package does not have a tensorboard or tensorflow dependency because there are several versions of tensorflow, for example, tensorflow and tensorflow-gpu, if jupyter_tensorboard requires any version of the tensorflow, it will install the version and abrupt the environment. Any way, you must be sure you have tensorflow(-gpu) installed before install this package.
+#.  **Be sure that tensorflow(-gpu)>=1.3.0 has been installed**. If not, you should install or upgrade your tensorflow>=1.3.0 first, and tensorboard is a dependency of tensorflow so that it is automatically installed. This package does not have a tensorflow dependency because there are several distributions of tensorflow, for example, tensorflow and tensorflow-gpu. Any way, you must be sure you have tensorflow(-gpu) installed before install this package.
 
 #.  Install the pip package. The python version must be the same as Jupyter: if you start jupyter notebook in python3, ``pip3`` may be used to install the package
 
-    ``pip(3) install jupyter_tensorboard``
+    ``pip(3) install jupyter-tensorboard``
 
     **NOTE:**
 
-    The python version are important, you must be sure that your *jupyter*, *jupyter_tensorboard*, *tensorflow* have the same python version. If your tensorflow python and jupyter python versions are different, e.g., use tensorflow in py2 but jupyter starts in py3, both versions of tensorflow(py2 and py3) should be installed, and jupyter_tensorboard should install to py3, in accordance with jupyter.
+    The python version is important, you must be sure that your *jupyter*, *jupyter_tensorboard*, *tensorflow* have the same python version. If your tensorflow python and jupyter python versions are different, e.g., use tensorflow in py2 but jupyter starts in py3, both versions of tensorflow(py2 and py3) should be installed, and jupyter_tensorboard should install to py3, in accordance with jupyter.
 
 #.  Restart the jupyter notebook server.
 
+Use jupyter-tensorboard in docker containers
+++++++++++++++++++++++++++++++++++++++++++++
+
+Docker image for ``Jupyter Notebook Scientific Python Stack + Tensorflow + Tensorboard`` is available, just with the command:
+
+.. code-block:: bash
+
+    docker pull lspvic/tensorboard-notebook
+    docker run -it --rm -p 8888:8888 lspvic/tensorboard-notebook
+
+Jupyter notebook with tensorboard integrated is now available in http://localhost:8888 , details are in `docker/README.md <https://github.com/lspvic/jupyter_tensorboard/tree/master/docker/README.md>`_.
 
 Usage
 -----
@@ -68,7 +79,10 @@ Troubleshooting
 
 If you encounter problems with this server extension, you can:
 
-* check the issue page for this repository. If you can't find one that fits your problem, please create a new one!
+* Check that tensorflow(-gpu)>=1.3 is installed.
+* Check that jupyter-tensorboard is installed via ``pip list|grep jupyter-tensorboard``.
+* Check that jupyter, tensorflow and jupyter_tensorboard have the same python version.
+* Check the issue page for this repository. If you can't find one that fits your problem, please create a new one!
 
 For debugging, useful information can (sometimes) be found by:
 
@@ -84,3 +98,6 @@ For debugging, useful information can (sometimes) be found by:
 
 .. |pypi-pyversions| image:: https://img.shields.io/pypi/pyversions/jupyter_tensorboard.svg
     :target: https://pypi.python.org/pypi/jupyter_tensorboard
+
+.. |docker-stars| image:: https://img.shields.io/docker/stars/lspvic/tensorboard-notebook.svg
+    :target: https://hub.docker.com/r/lspvic/tensorboard-notebook/
