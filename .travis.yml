@@ -13,12 +13,22 @@ script:
   - tox
 notifications:
   email: false
+before_deploy:
+- pip install -e .
 deploy:
-  provider: pypi
-  user: lspvic
-  password:
-    secure: b4lvi3Bs52SLWvmj+YXK4QsjGDSPZtGKxvX89ku7ZRHo14BXLfiDEpP7LrGDrHdAF5nHrJqOE71haa3ClVsCtCuzyyYGKuWU3rNGfxpXOCWJ/5ZakEJSXNuGkmrAdje+aTML81p3CNVFQ0aaNAk01etVigewVM5idlNBKEC0acLEN0ifgyPocacFfSDhZ0BPIfL4kgdQBVc1FjJQp3+XH0Ix5CkV4nB58EZf5gBBoorXkdSsSu8itEVVFjpvbWeFRGLuv51fmJMdNmBHZvc7TUiwrGOzhUaPXtM1BTqJ7tOSNqm70SgTBWljlnvbueiQCDjryoHjMHtCC4sbZh/RQMpu3Gol2nM0ZjkoKf1NPGUvY5+Mx+vuJXVFI77DLFkG1IgmG7M/utMolpba10UMd23fn9HflakK9qVTiOzRSXoz/30IKDYBx0ViT7k4FWg9HhvfFjAhTD4RpqN8yMcZ5TkcjXKzR9nedNrkyM6GrGYQeDIqJwbgZEbfHynt74FajmQtp2Vgs6fw6LrHBvF/YU6s4oaLlEZdiEjsuiFFTS+818HZ8vU/TwF57Hz9FxGCtboOKoA6gqh/FW7797fZqkfzhPVX7vYnsogWXvAKR6WXi0SZGkSptJgEsc8M6ZDnWHTlpyfAFTtl+nKkEePEkisbJQps/KcQu5daBU5FMp4=
-  distributions: "sdist bdist_wheel"
-  on:
-    branch: release
-    python: "3.6"
+  - provider: pypi
+    user: lspvic
+    password:
+      secure:  b4lvi3Bs52SLWvmj+YXK4QsjGDSPZtGKxvX89ku7ZRHo14BXLfiDEpP7LrGDrHdAF5nHrJqOE71haa3ClVsCtCuzyyYGKuWU3rNGfxpXOCWJ/5ZakEJSXNuGkmrAdje+aTML81p3CNVFQ0aaNAk01etVigewVM5idlNBKEC0acLEN0ifgyPocacFfSDhZ0BPIfL4kgdQBVc1FjJQp3+XH0Ix5CkV4nB58EZf5gBBoorXkdSsSu8itEVVFjpvbWeFRGLuv51fmJMdNmBHZvc7TUiwrGOzhUaPXtM1BTqJ7tOSNqm70SgTBWljlnvbueiQCDjryoHjMHtCC4sbZh/RQMpu3Gol2nM0ZjkoKf1NPGUvY5+Mx+vuJXVFI77DLFkG1IgmG7M/utMolpba10UMd23fn9HflakK9qVTiOzRSXoz/30IKDYBx0ViT7k4FWg9HhvfFjAhTD4RpqN8yMcZ5TkcjXKzR9nedNrkyM6GrGYQeDIqJwbgZEbfHynt74FajmQtp2Vgs6fw6LrHBvF/YU6s4oaLlEZdiEjsuiFFTS+818HZ8vU/TwF57Hz9FxGCtboOKoA6gqh/FW7797fZqkfzhPVX7vYnsogWXvAKR6WXi0SZGkSptJgEsc8M6ZDnWHTlpyfAFTtl+nKkEePEkisbJQps/KcQu5daBU5FMp4=
+    distributions: "sdist bdist_wheel"
+    on:
+      branch: release
+      python: "3.6"
+  - provider: pypi
+    user: lspvic
+    password:
+      secure:  b4lvi3Bs52SLWvmj+YXK4QsjGDSPZtGKxvX89ku7ZRHo14BXLfiDEpP7LrGDrHdAF5nHrJqOE71haa3ClVsCtCuzyyYGKuWU3rNGfxpXOCWJ/5ZakEJSXNuGkmrAdje+aTML81p3CNVFQ0aaNAk01etVigewVM5idlNBKEC0acLEN0ifgyPocacFfSDhZ0BPIfL4kgdQBVc1FjJQp3+XH0Ix5CkV4nB58EZf5gBBoorXkdSsSu8itEVVFjpvbWeFRGLuv51fmJMdNmBHZvc7TUiwrGOzhUaPXtM1BTqJ7tOSNqm70SgTBWljlnvbueiQCDjryoHjMHtCC4sbZh/RQMpu3Gol2nM0ZjkoKf1NPGUvY5+Mx+vuJXVFI77DLFkG1IgmG7M/utMolpba10UMd23fn9HflakK9qVTiOzRSXoz/30IKDYBx0ViT7k4FWg9HhvfFjAhTD4RpqN8yMcZ5TkcjXKzR9nedNrkyM6GrGYQeDIqJwbgZEbfHynt74FajmQtp2Vgs6fw6LrHBvF/YU6s4oaLlEZdiEjsuiFFTS+818HZ8vU/TwF57Hz9FxGCtboOKoA6gqh/FW7797fZqkfzhPVX7vYnsogWXvAKR6WXi0SZGkSptJgEsc8M6ZDnWHTlpyfAFTtl+nKkEePEkisbJQps/KcQu5daBU5FMp4=
+    distributions: "sdist bdist_wheel"
+    on:
+      tags: true
+      python: "3.6"
