@@ -5,6 +5,8 @@ import os
 import io
 import re
 from setuptools import setup
+from setuptools.command.install import install
+from setuptools.command.develop import develop
 
 
 def read(*names, **kwargs):
@@ -22,6 +24,27 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
+
+
+def enable_extension_after_install():
+    from jupyter_tensorboard.application import (
+        EnableJupyterTensorboardApp,
+    )
+    EnableJupyterTensorboardApp.launch_instance(argv=[])
+
+
+class EnableExtensionDevelop(develop):
+
+    def run(self):
+        develop.run(self)
+        enable_extension_after_install()
+
+
+class EnableExtensionInstall(install):
+
+    def run(self):
+        install.run(self)
+        enable_extension_after_install()
 
 
 name = 'jupyter_tensorboard'
@@ -64,4 +87,8 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
+    cmdclass={
+        'install': EnableExtensionInstall,
+        'develop': EnableExtensionDevelop,
+    },
 )

@@ -10,7 +10,7 @@ A jupyter server extension for jupyter notebook and tensorboard (a visualization
 Installation
 ------------
 
-#.  Be sure that tensorflow(-gpu)>=1.3.0 has been installed. If not, you should install or upgrade your tensorflow>=1.3.0 first, and tensorbaord is a dependency of tensorflow so that it is automatically installed. This package does not have a tensorbaord or tensorflow dependency because there are several versions of tensorflow, for example, tensorflow and tensorflow-gpu, if jupyter_tensorboard requires any version of the tensorflow, it will install the version and abrupt the environment. Any way, you must be sure you have tensorflow(-gpu) installed before install this package.
+#.  Be sure that tensorflow(-gpu)>=1.3.0 has been installed. If not, you should install or upgrade your tensorflow>=1.3.0 first, and tensorboard is a dependency of tensorflow so that it is automatically installed. This package does not have a tensorboard or tensorflow dependency because there are several versions of tensorflow, for example, tensorflow and tensorflow-gpu, if jupyter_tensorboard requires any version of the tensorflow, it will install the version and abrupt the environment. Any way, you must be sure you have tensorflow(-gpu) installed before install this package.
 
 #.  Install the pip package. The python version must be the same as Jupyter: if you start jupyter notebook in python3, ``pip3`` may be used to install the package
 
@@ -19,13 +19,6 @@ Installation
     **NOTE:**
 
     The python version are important, you must be sure that your *jupyter*, *jupyter_tensorboard*, *tensorflow* have the same python version. If your tensorflow python and jupyter python versions are different, e.g., use tensorflow in py2 but jupyter starts in py3, both versions of tensorflow(py2 and py3) should be installed, and jupyter_tensorboard should install to py3, in accordance with jupyter.
-
-#.  Enabling the notebook server to load the server extension. A `jupyter` subcommand is provided for this. You can enable the serverextension and the configurator nbextensions listed below for the current user with
-
-    ``jupyter tensorboard enable --user``
-
-
-    The command accepts the same flags as the ``jupyter serverextension`` command provided by notebook versions >= 5.0, including ``--system`` to enable in system-wide config (the default), or ``--sys-prefix`` to enable in config files inside python's ``sys.prefix``, such as for a virtual environment. The provided ``jupyter tensorboard`` command can also be used to ``disable``.
 
 #.  Restart the jupyter notebook server.
 
@@ -39,7 +32,7 @@ Once `jupyter_tensorboard` is installed and enabled, and your notebook server ha
 
 .. image:: https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_button.png
 
-- In notebook tree view, click the ``tensorbaord`` menu in ``new`` and a new tensorbaord instance is started with current directory as logdir.
+- In notebook tree view, click the ``tensorboard`` menu in ``new`` and a new tensorboard instance is started with current directory as logdir.
 
 .. image:: https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_menu.png
 
@@ -47,9 +40,28 @@ Once `jupyter_tensorboard` is installed and enabled, and your notebook server ha
 
 .. image:: https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_list.png
 
-- The tensorbaord instance interface is in ``http://jupyter-host/tensorboard/<name>/`` with the instance names increasing from 1.
+- The tensorboard instance interface is in ``http://jupyter-host/tensorboard/<name>/`` with the instance names increasing from 1.
 
 .. image:: https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_url.png
+
+Uninstall
+---------
+To purge the installation of the extension, there are a few steps to execute:
+
+.. code:: bash
+
+    jupyter tensorboard disable --user
+    pip uninstall jupyter-tensorboard
+
+or if you have uninstall the pip package, but the extension seems to be not purged, you can execute:
+
+.. code:: bash
+
+    jupyter serverextension disable --user
+    jupyter nbextension disable jupyter_tensorboard/tree --user
+    jupyter nbextension uninstall jupyter_tensorboard --user
+
+The commands accept the same flags as the ``jupyter serverextension`` command provided by notebook versions, including ``--system`` to enable(or disable) in system-wide config, or ``--sys-prefix`` to enable(or disable) in config files inside python's ``sys.prefix``, such as for a virtual environment.
 
 Troubleshooting
 ---------------
