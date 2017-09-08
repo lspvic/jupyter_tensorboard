@@ -2,4 +2,4 @@ FROM jupyter/tensorflow-notebook
 
 MAINTAINER lspvic <lspvic@qq.com>
 
-RUN pip install jupyter-tensorboard
+RUN pip install --pre jupyter-tensorboard

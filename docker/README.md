@@ -3,7 +3,38 @@
 # Jupyter Notebook Scientific Python Stack + Tensorflow + Tensorboard
 
 This docker image is based on  [Tensorflow Notebook](https://github.com/jupyter/docker-stacks/tree/master/tensorflow-notebook), and gives the ability of 
-**Starting tensorboard in Jupyter notebook**. Next are the usages of tensorflow-notebook, all available in tensorboard-notebook.
+**Starting tensorboard in Jupyter notebook**. 
+
+jupyter-tensorboard extension github: https://github.com/lspvic/jupyter_tensorboard
+
+## Usage
+
+Pull `tensorboard-notebook`  docker image and start a container:
+
+```bash
+docker pull lspvic/tensorboard-notebook
+docker run -it --rm -p 8888:8888 lspvic/tensorboard-notebook
+```
+
+Once `tensorboard-notebook` is started , you should be able to find the interfaces to manage tensorboard instances in http://localhost:8888.
+
+In notebook tree view, select a directory, a ``tensorboard`` button will be presented. Click the button, a new browser tab will be opened to show the tensorboard interface with the proposed directory as logdir.
+
+![](https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_button.png)
+
+In notebook tree view, click the ``tensorboard`` menu in ``new`` and a new tensorboard instance is started with current directory as logdir.
+
+![](https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_menu.png)
+
+* In notebook ``running`` tab, a list of tensorboard instances are showed. Managing operations such as browsing, navigating, shutdown  can be found here. 
+
+![](https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_list.png)
+
+The tensorboard instance interface is in ``http://jupyter-host/tensorboard/<name>/`` with the instance names increasing from 1.
+
+![](https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_url.png)
+
+Next are the usages of tensorflow-notebook, all available in tensorboard-notebook.
 
 ## What it Gives You
 

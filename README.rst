@@ -32,7 +32,7 @@ Docker image for ``Jupyter Notebook Scientific Python Stack + Tensorflow + Tenso
     docker pull lspvic/tensorboard-notebook
     docker run -it --rm -p 8888:8888 lspvic/tensorboard-notebook
 
-Jupyter notebook with tensorboard integrated is now available in http://localhost:8888 , details are in `docker/README.md <https://github.com/lspvic/jupyter_tensorboard/tree/master/docker/README.md>`_.
+Jupyter notebook with tensorboard integrated is now available in http://localhost:8888 , details are in `docker/README.md <https://github.com/lspvic/jupyter_tensorboard/tree/master/docker/>`_.
 
 Usage
 -----
