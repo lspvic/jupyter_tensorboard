@@ -5,18 +5,42 @@ import threading
 import time
 import itertools
 from collections import namedtuple
+import logging
 
 from tensorboard.backend import application
-from tensorboard.plugins.audio import audio_plugin
-from tensorboard.plugins.core import core_plugin
-from tensorboard.plugins.distribution import distributions_plugin
-from tensorboard.plugins.graph import graphs_plugin
-from tensorboard.plugins.histogram import histograms_plugin
-from tensorboard.plugins.image import images_plugin
-from tensorboard.plugins.profile import profile_plugin
-from tensorboard.plugins.projector import projector_plugin
-from tensorboard.plugins.scalar import scalars_plugin
-from tensorboard.plugins.text import text_plugin
+try:
+    # Tensorboard 0.4.x series
+    from tensorboard import default
+    get_plugins = default.get_plugins
+    logging.debug("Tensorboard 0.4.x series detected")
+except ImportError:
+    # Tensorboard 0.3.x series
+    from tensorboard.plugins.audio import audio_plugin
+    from tensorboard.plugins.core import core_plugin
+    from tensorboard.plugins.distribution import distributions_plugin
+    from tensorboard.plugins.graph import graphs_plugin
+    from tensorboard.plugins.histogram import histograms_plugin
+    from tensorboard.plugins.image import images_plugin
+    from tensorboard.plugins.profile import profile_plugin
+    from tensorboard.plugins.projector import projector_plugin
+    from tensorboard.plugins.scalar import scalars_plugin
+    from tensorboard.plugins.text import text_plugin
+    logging.debug("Tensorboard 0.3.x series detected")
+
+    def get_plugins():
+        return [
+                core_plugin.CorePlugin,
+                scalars_plugin.ScalarsPlugin,
+                images_plugin.ImagesPlugin,
+                audio_plugin.AudioPlugin,
+                graphs_plugin.GraphsPlugin,
+                distributions_plugin.DistributionsPlugin,
+                histograms_plugin.HistogramsPlugin,
+                projector_plugin.ProjectorPlugin,
+                text_plugin.TextPlugin,
+                profile_plugin.ProfilePlugin,
+            ]
+
 
 from .handlers import notebook_dir
 
@@ -39,7 +63,8 @@ def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
     return thread
 
 
-def TensorBoardWSGIApp(logdir, plugins, multiplexer, reload_interval):
+def TensorBoardWSGIApp(logdir, plugins, multiplexer,
+                       reload_interval, path_prefix=""):
     path_to_run = application.parse_event_files_spec(logdir)
     if reload_interval:
         thread = start_reloading_multiplexer(
@@ -72,18 +97,7 @@ class TensorboardManger(dict):
 
         if logdir not in self._logdir_dict:
             purge_orphaned_data = True
-            plugins = [
-                core_plugin.CorePlugin,
-                scalars_plugin.ScalarsPlugin,
-                images_plugin.ImagesPlugin,
-                audio_plugin.AudioPlugin,
-                graphs_plugin.GraphsPlugin,
-                distributions_plugin.DistributionsPlugin,
-                histograms_plugin.HistogramsPlugin,
-                projector_plugin.ProjectorPlugin,
-                text_plugin.TextPlugin,
-                profile_plugin.ProfilePlugin,
-            ]
+            plugins = get_plugins()
             reload_interval = reload_interval or 30
             application.standard_tensorboard_wsgi(
                 logdir=logdir, reload_interval=reload_interval,

@@ -74,7 +74,6 @@ setup(
     ]],
     install_requires=[
         'notebook>=5.0',
-        'tensorflow-tensorboard>=0.1.5',
     ],
     classifiers=[
         'Intended Audience :: Developers',
