@@ -48,6 +48,7 @@ def nb_app():
     from notebook.notebookapp import NotebookApp
     app = NotebookApp()
     app.log_level = logging.DEBUG
+    app.ip = '127.0.0.1'
     app.token = ''
     app.password = ''
     app.disable_check_xsrf = True
