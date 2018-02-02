@@ -1,7 +1,7 @@
 Jupyter-Tensorboard: Start tensorboard in Jupyter notebook
 =================================================================
 
-|build-status| |pypi-status| |pypi-pyversions| |docker-stars|
+|build-status| |pypi-status| |pypi-pyversions| |tf-versions| |docker-stars|
 
 Tensorboard Integration for Jupyter Notebook.
 
@@ -98,6 +98,9 @@ For debugging, useful information can (sometimes) be found by:
 
 .. |pypi-pyversions| image:: https://img.shields.io/pypi/pyversions/jupyter_tensorboard.svg
     :target: https://pypi.python.org/pypi/jupyter_tensorboard
+
+.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-1.3,%201.4,%201.5-blue.svg
+    :target: https://github.com/tensorflow/tensorflow/releases
 
 .. |docker-stars| image:: https://img.shields.io/docker/stars/lspvic/tensorboard-notebook.svg
     :target: https://hub.docker.com/r/lspvic/tensorboard-notebook/
