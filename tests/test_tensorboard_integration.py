@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import sys
 import time
 import logging
 import json
@@ -45,6 +46,7 @@ def tf_logs(tmpdir_factory):
 
 @pytest.fixture(scope="session")
 def nb_app():
+    sys.argv = ["--port=6005", "--ip=127.0.0.1", "--no-browser", "--debug"]
     from notebook.notebookapp import NotebookApp
     app = NotebookApp()
     app.log_level = logging.DEBUG

@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import threading
 import time
 import itertools
 from collections import namedtuple
 import logging
 
-from tensorboard.backend import application
+sys.argv = ["tensorboard"]
+
+from tensorboard.backend import application   # noqa
+
 try:
     # Tensorboard 0.4.x series
     from tensorboard import default
@@ -42,7 +46,7 @@ except ImportError:
             ]
 
 
-from .handlers import notebook_dir
+from .handlers import notebook_dir   # noqa
 
 TensorBoardInstance = namedtuple(
     'TensorBoardInstance', ['name', 'logdir', 'tb_app', 'thread'])
