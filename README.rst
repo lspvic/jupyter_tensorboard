@@ -1,11 +1,15 @@
-Jupyter-Tensorboard: Start tensorboard in Jupyter notebook
+Jupyter-Tensorboard: Start Tensorboard in Jupyter Notebook
 =================================================================
 
 |build-status| |pypi-status| |pypi-pyversions| |tf-versions| |docker-stars|
 
 Tensorboard Integration for Jupyter Notebook.
 
-A jupyter server extension for jupyter notebook and tensorboard (a visualization tool for tensorflow) which provides graphical user interface for tensorboard start, manage and stop in jupyter interface.
+A jupyter server extension for better collaboration between jupyter notebook and tensorboard (a visualization tool for tensorflow), providing graphical user interface for tensorboard start, manage and stop in jupyter interface. It provides:
+
+* No need to type tensorboard and the long log path in command line.
+* No need extra port for serve tensorboard. This is helpful for remote jupyter servers.
+* Multiple tensorboard instance managing simultaneously.
 
 Installation
 ------------
@@ -79,16 +83,11 @@ Troubleshooting
 
 If you encounter problems with this server extension, you can:
 
-* Check that tensorflow(-gpu)>=1.3 is installed.
-* Check that jupyter-tensorboard is installed via ``pip list|grep jupyter-tensorboard``.
-* Check that jupyter, tensorflow and jupyter_tensorboard have the same python version.
+* Check that jupyter-tensorboard, tensorflow and tensorboard are all installed via ``pip list|grep tensor``, you should see at least three lines, ``jupyter-tensorboard``, ``tensorflow`` and ``tensorflow-tensorboard`` (or ``tensorflow`` ). And also, check that ``tensorflow`` version is >=1.3.
+* Check that jupyter notebook is installed in the same python version via ``pip list|grep notebook``, you shold see ``notebook`` package.
+* If you have installed the package but no buttons of tensorboard in jupyter appear, you need to run ``jupyter tensorboard enable --user``. The step should be performed in the installation process, however, in some cases it seems that the command is not executed.
+* Checking for error messages in the browser's Javascript console (e.g. CTRL+SHIFT+J in Chrome).
 * Check the issue page for this repository. If you can't find one that fits your problem, please create a new one!
-
-For debugging, useful information can (sometimes) be found by:
-
-* Checking for error messages in the browser's Javascript console.
-* Checking for messages in the notebook server's logs. This is particularly useful when the server is run with the --debug flag, to get as many logs as possible.
-
 
 .. |build-status| image:: https://img.shields.io/travis/lspvic/jupyter_tensorboard.svg
     :target: https://travis-ci.org/lspvic/jupyter_tensorboard
