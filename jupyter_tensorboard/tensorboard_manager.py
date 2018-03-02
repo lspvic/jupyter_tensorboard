@@ -55,13 +55,13 @@ TensorBoardInstance = namedtuple(
 def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
     def _ReloadForever():
         current_thread = threading.currentThread()
-        current_thread.stop = False
-        current_thread.reload_time = None
         while not current_thread.stop:
             application.reload_multiplexer(multiplexer, path_to_run)
             current_thread.reload_time = time.time()
             time.sleep(reload_interval)
     thread = threading.Thread(target=_ReloadForever)
+    thread.reload_time = None
+    thread.stop = False
     thread.daemon = True
     thread.start()
     return thread
