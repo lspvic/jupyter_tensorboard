@@ -72,7 +72,7 @@ or if you have uninstall the pip package, but the extension seems to be not purg
 
 .. code:: bash
 
-    jupyter serverextension disable --user
+    jupyter serverextension disable jupyter_tensorboard --user
     jupyter nbextension disable jupyter_tensorboard/tree --user
     jupyter nbextension uninstall jupyter_tensorboard --user
 
