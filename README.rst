@@ -83,7 +83,7 @@ Troubleshooting
 
 If you encounter problems with this server extension, you can:
 
-* Check that jupyter-tensorboard, tensorflow and tensorboard are all installed via ``pip list|grep tensor``, you should see at least three lines, ``jupyter-tensorboard``, ``tensorflow`` and ``tensorflow-tensorboard`` (or ``tensorflow`` ). And also, check that ``tensorflow`` version is >=1.3.
+* Check that jupyter-tensorboard, tensorflow and tensorboard are all installed via ``pip list|grep tensor``, you should see at least three lines, ``jupyter-tensorboard``, ``tensorflow`` and ``tensorflow-tensorboard`` (or ``tensorboard`` ). And also, check that ``tensorflow`` version is >=1.3.
 * Check that jupyter notebook is installed in the same python version via ``pip list|grep notebook``, you shold see ``notebook`` package.
 * If you have installed the package but no buttons of tensorboard in jupyter appear, you need to run ``jupyter tensorboard enable --user``. The step should be performed in the installation process, however, in some cases it seems that the command is not executed.
 * Checking for error messages in the browser's Javascript console (e.g. CTRL+SHIFT+J in Chrome).
