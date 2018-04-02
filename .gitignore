@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# pytest
+.pytest_cache/
+pytestdebug.log
