@@ -98,7 +98,7 @@ If you encounter problems with this server extension, you can:
 .. |pypi-pyversions| image:: https://img.shields.io/pypi/pyversions/jupyter_tensorboard.svg
     :target: https://pypi.python.org/pypi/jupyter_tensorboard
 
-.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-1.3,%201.4,%201.5,%201.6-blue.svg
+.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-1.3,%201.4,%201.5,%201.6,%201.7-blue.svg
     :target: https://github.com/tensorflow/tensorflow/releases
 
 .. |docker-stars| image:: https://img.shields.io/docker/stars/lspvic/tensorboard-notebook.svg
