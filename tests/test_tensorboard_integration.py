@@ -6,9 +6,7 @@ import logging
 import json
 
 import pytest
-import tornado
-from tornado.httpclient import HTTPRequest, HTTPError
-from tornado.testing import AsyncHTTPTestCase, gen_test
+from tornado.testing import AsyncHTTPTestCase
 
 
 @pytest.fixture(scope="session")
@@ -51,6 +49,7 @@ def nb_app():
     app = NotebookApp()
     app.log_level = logging.DEBUG
     app.ip = '127.0.0.1'
+    # TODO: Add auth check tests
     app.token = ''
     app.password = ''
     app.disable_check_xsrf = True
@@ -69,28 +68,21 @@ class TestJupyterExtension(AsyncHTTPTestCase):
     def get_app(self):
         return self.app
 
-    def get_new_ioloop(self):
-        return tornado.ioloop.IOLoop.instance()
-
-    @gen_test
     def test_tensorboard(self):
 
         content = {"logdir": self.log_dir}
         content_type = {"Content-Type": "application/json"}
-        request = HTTPRequest(
-            url=self.get_url('/api/tensorboard'),
+        response = self.fetch(
+            '/api/tensorboard',
             method='POST',
             body=json.dumps(content),
             headers=content_type)
-        response = yield self.http_client.fetch(request)
 
-        request = HTTPRequest(url=self.get_url('/api/tensorboard'))
-        response = yield self.http_client.fetch(request)
+        response = self.fetch('/api/tensorboard')
         instances = json.loads(response.body.decode())
         assert len(instances) > 0
 
-        request = HTTPRequest(url=self.get_url('/api/tensorboard/1'))
-        response = yield self.http_client.fetch(request)
+        response = self.fetch('/api/tensorboard/1')
         instance = json.loads(response.body.decode())
         instance2 = None
         for inst in instances:
@@ -98,46 +90,38 @@ class TestJupyterExtension(AsyncHTTPTestCase):
                 instance2 = inst
         assert instance == instance2
 
-        request = HTTPRequest(url=self.get_url('/tensorboard/1/#graphs'))
-        response = yield self.http_client.fetch(request)
+        response = self.fetch('/tensorboard/1/#graphs')
         assert response.code == 200
 
-        request = HTTPRequest(
-            url=self.get_url('/tensorboard/1/data/plugins_listing'))
-        response = yield self.http_client.fetch(request)
+        response = self.fetch('/tensorboard/1/data/plugins_listing')
         plugins_list = json.loads(response.body.decode())
         assert plugins_list["graphs"]
         assert plugins_list["scalars"]
 
-        request = HTTPRequest(
-            url=self.get_url('/api/tensorboard/1'),
+        response = self.fetch(
+            '/api/tensorboard/1',
             method='DELETE')
-        response = yield self.http_client.fetch(request)
         assert response.code == 204
 
-        request = HTTPRequest(url=self.get_url('/api/tensorboard/1'))
-        with pytest.raises(HTTPError) as e:
-            response = yield self.http_client.fetch(request)
-            assert e.value.code == 404
+        response = self.fetch('/api/tensorboard/1')
+        error_msg = json.loads(response.body.decode())
+        assert error_msg["message"] == (
+            "TensorBoard instance not found: %r" % str(1))
 
-    @gen_test(timeout=10)
     def test_instance_reload(self):
         content = {"logdir": self.log_dir, "reload_interval": 4}
         content_type = {"Content-Type": "application/json"}
-        request = HTTPRequest(
-            url=self.get_url('/api/tensorboard'),
+        response = self.fetch(
+            '/api/tensorboard',
             method='POST',
             body=json.dumps(content),
             headers=content_type)
-        response = yield self.http_client.fetch(request)
         instance = json.loads(response.body.decode())
         assert instance is not None
         name = instance["name"]
         reload_time = instance["reload_time"]
 
         time.sleep(5)
-        request = HTTPRequest(
-            url=self.get_url('/api/tensorboard/{}'.format(name)))
-        response = yield self.http_client.fetch(request)
+        response = self.fetch('/api/tensorboard/{}'.format(name))
         instance2 = json.loads(response.body.decode())
         assert instance2["reload_time"] != reload_time

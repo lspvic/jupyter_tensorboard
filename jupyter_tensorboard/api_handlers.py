@@ -4,7 +4,7 @@ import json
 import os
 
 from tornado import web
-from notebook.base.handlers import APIHandler, json_errors
+from notebook.base.handlers import APIHandler
 
 from .handlers import notebook_dir
 
@@ -15,7 +15,6 @@ def _trim_notebook_dir(dir):
 
 class TbRootHandler(APIHandler):
 
-    @json_errors
     @web.authenticated
     def get(self):
         terms = [
@@ -28,7 +27,6 @@ class TbRootHandler(APIHandler):
         ]
         self.finish(json.dumps(terms))
 
-    @json_errors
     @web.authenticated
     def post(self):
         data = self.get_json_body()
@@ -47,7 +45,6 @@ class TbInstanceHandler(APIHandler):
 
     SUPPORTED_METHODS = ('GET', 'DELETE')
 
-    @json_errors
     @web.authenticated
     def get(self, name):
         manager = self.settings["tensorboard_manager"]
@@ -61,7 +58,6 @@ class TbInstanceHandler(APIHandler):
             raise web.HTTPError(
                 404, "TensorBoard instance not found: %r" % name)
 
-    @json_errors
     @web.authenticated
     def delete(self, name):
         manager = self.settings["tensorboard_manager"]
