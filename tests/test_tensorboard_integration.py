@@ -105,8 +105,8 @@ class TestJupyterExtension(AsyncHTTPTestCase):
 
         response = self.fetch('/api/tensorboard/1')
         error_msg = json.loads(response.body.decode())
-        assert error_msg["message"] == (
-            "TensorBoard instance not found: %r" % str(1))
+        assert error_msg["message"].startswith(
+            "TensorBoard instance not found:")
 
     def test_instance_reload(self):
         content = {"logdir": self.log_dir, "reload_interval": 4}
