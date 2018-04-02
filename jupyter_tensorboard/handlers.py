@@ -48,6 +48,7 @@ def load_jupyter_server_extension(nb_app):
 
 class TensorboardHandler(IPythonHandler):
 
+    @web.authenticated
     def get(self, name, path):
 
         if path == "":
