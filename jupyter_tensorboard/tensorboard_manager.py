@@ -13,10 +13,36 @@ sys.argv = ["tensorboard"]
 from tensorboard.backend import application   # noqa
 
 try:
-    # Tensorboard 0.4.x series
+    # Tensorboard 0.4.x above series
     from tensorboard import default
-    get_plugins = default.get_plugins
-    logging.debug("Tensorboard 0.4.x series detected")
+    if hasattr(default, 'PLUGIN_LOADERS'):
+        # Tensorflow 1.10 series
+        logging.debug("Tensorboard 1.10 or above series detected")
+        from tensorboard import program
+
+        def create_tb_app(logdir, reload_interval, purge_orphaned_data):
+            argv = [
+                        "--logdir", logdir,
+                        "--reload_interval", str(reload_interval),
+                        "--purge_orphaned_data", str(purge_orphaned_data),
+                   ]
+            tensorboard = program.TensorBoard(
+                default.PLUGIN_LOADERS,
+                default.get_assets_zip_provider())
+            tensorboard.configure(argv)
+            return application.standard_tensorboard_wsgi(
+                tensorboard.flags,
+                tensorboard.plugin_loaders,
+                tensorboard.assets_zip_provider)
+    else:
+        logging.debug("Tensorboard 0.4.x series detected")
+
+        def create_tb_app(logdir, reload_interval, purge_orphaned_data):
+            return application.standard_tensorboard_wsgi(
+                logdir=logdir, reload_interval=reload_interval,
+                purge_orphaned_data=purge_orphaned_data,
+                plugins=default.get_plugins())
+
 except ImportError:
     # Tensorboard 0.3.x series
     from tensorboard.plugins.audio import audio_plugin
@@ -31,8 +57,7 @@ except ImportError:
     from tensorboard.plugins.text import text_plugin
     logging.debug("Tensorboard 0.3.x series detected")
 
-    def get_plugins():
-        return [
+    _plugins = [
                 core_plugin.CorePlugin,
                 scalars_plugin.ScalarsPlugin,
                 images_plugin.ImagesPlugin,
@@ -44,6 +69,12 @@ except ImportError:
                 text_plugin.TextPlugin,
                 profile_plugin.ProfilePlugin,
             ]
+
+    def create_tb_app(logdir, reload_interval, purge_orphaned_data):
+        return application.standard_tensorboard_wsgi(
+            logdir=logdir, reload_interval=reload_interval,
+            purge_orphaned_data=purge_orphaned_data,
+            plugins=_plugins)
 
 
 from .handlers import notebook_dir   # noqa
@@ -101,11 +132,10 @@ class TensorboardManger(dict):
 
         if logdir not in self._logdir_dict:
             purge_orphaned_data = True
-            plugins = get_plugins()
             reload_interval = reload_interval or 30
-            application.standard_tensorboard_wsgi(
+            create_tb_app(
                 logdir=logdir, reload_interval=reload_interval,
-                purge_orphaned_data=purge_orphaned_data, plugins=plugins)
+                purge_orphaned_data=purge_orphaned_data)
 
         return self._logdir_dict[logdir]
 
