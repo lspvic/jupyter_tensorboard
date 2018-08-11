@@ -12,7 +12,8 @@ notebook_dir = None
 def load_jupyter_server_extension(nb_app):
 
     global notebook_dir
-    notebook_dir = nb_app.notebook_dir
+    # notebook_dir should be root_dir of contents_manager
+    notebook_dir = nb_app.contents_manager.root_dir
 
     web_app = nb_app.web_app
     base_url = web_app.settings['base_url']
