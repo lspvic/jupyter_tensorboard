@@ -1,15 +1,15 @@
 
 import { 
   each, map, toArray, IIterator
-} from '@lumino/algorithm';
+} from '@phosphor/algorithm';
 
 import {
   IDisposable
-} from '@lumino/disposable';
+} from '@phosphor/disposable';
 
 import {
   JSONObject
-} from '@lumino/coreutils';
+} from '@phosphor/coreutils';
 
 import {
   URLExt
@@ -17,7 +17,7 @@ import {
 
 import {
     Signal, ISignal
-} from '@lumino/signaling';
+} from '@phosphor/signaling';
 
 import {
     ServerConnection
