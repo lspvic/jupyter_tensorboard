@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab_tensorboard",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "A JupyterLab extension for tensorboard.",
   "keywords": [
     "jupyter",
