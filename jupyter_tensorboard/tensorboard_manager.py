@@ -22,6 +22,7 @@ try:
 
         def create_tb_app(logdir, reload_interval, purge_orphaned_data):
             argv = [
+                        "",
                         "--logdir", logdir,
                         "--reload_interval", str(reload_interval),
                         "--purge_orphaned_data", str(purge_orphaned_data),
