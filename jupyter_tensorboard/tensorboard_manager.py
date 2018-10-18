@@ -15,8 +15,8 @@ from tensorboard.backend import application   # noqa
 try:
     # Tensorboard 0.4.x above series
     from tensorboard import default
-    if hasattr(default, 'PLUGIN_LOADERS'):
-        # Tensorflow 1.10 series
+    if hasattr(default, 'PLUGIN_LOADERS') or hasattr(default, '_PLUGINS'):
+        # Tensorflow 1.10 or above series
         logging.debug("Tensorboard 1.10 or above series detected")
         from tensorboard import program
 
@@ -26,9 +26,7 @@ try:
                         "--reload_interval", str(reload_interval),
                         "--purge_orphaned_data", str(purge_orphaned_data),
                    ]
-            tensorboard = program.TensorBoard(
-                default.PLUGIN_LOADERS,
-                default.get_assets_zip_provider())
+            tensorboard = program.TensorBoard()
             tensorboard.configure(argv)
             return application.standard_tensorboard_wsgi(
                 tensorboard.flags,
