@@ -89,6 +89,13 @@ If you encounter problems with this server extension, you can:
 * Checking for error messages in the browser's Javascript console (e.g. CTRL+SHIFT+J in Chrome).
 * Check the issue page for this repository. If you can't find one that fits your problem, please create a new one!
 
+Thanks
+------
+
+Thanks all the contributors and others for making significant contributions (report bugs, fix bugs, make enhancements, etc).
+
+* `@ferrarodav <https://github.com/ferrarodav>`_ - PR `32 <https://github.com/lspvic/jupyter_tensorboard/pull/32>`_ .
+
 .. |build-status| image:: https://img.shields.io/travis/lspvic/jupyter_tensorboard.svg
     :target: https://travis-ci.org/lspvic/jupyter_tensorboard
 
