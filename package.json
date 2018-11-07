@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab_tensorboard",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A JupyterLab extension for tensorboard.",
   "keywords": [
     "jupyter",
@@ -30,10 +30,10 @@
     "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@jupyterlab/application": "^0.18.2",
-    "@jupyterlab/apputils": "^0.18.2",
+    "@jupyterlab/application": "^0.19.1",
+    "@jupyterlab/apputils": "^0.19.1",
     "@jupyterlab/coreutils": "^2.1.2",
-    "@jupyterlab/launcher": "^0.18.2",
+    "@jupyterlab/launcher": "^0.19.1",
     "@jupyterlab/services": "^3.1.2",
     "@phosphor/algorithm": "^1.1.2",
     "@phosphor/coreutils": "^1.3.0",
