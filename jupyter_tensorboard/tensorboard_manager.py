@@ -98,7 +98,7 @@ def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
 
 
 def TensorBoardWSGIApp(logdir, plugins, multiplexer,
-                       reload_interval, path_prefix=""):
+                       reload_interval, path_prefix="", reload_task="auto"):
     path_to_run = application.parse_event_files_spec(logdir)
     if reload_interval:
         thread = start_reloading_multiplexer(
