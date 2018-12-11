@@ -34,6 +34,8 @@ Sidebar shows the running tensorboards.
 
 User can also use Commands to create a tensorboard with inputting the logdir path.
 
+`NOTE: The logdir path should be relative to the jupyterlab's root directory. If not, jupyterlab will return 404 not found error.`
+
 <img src="image/commands.png" />
 
 <img src="image/commands-input.png">
