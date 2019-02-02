@@ -53,11 +53,11 @@ class TensorboardHandler(IPythonHandler):
     def get(self, name, path):
 
         if path == "":
-                uri = self.request.path + "/"
-                if self.request.query:
-                    uri += "?" + self.request.query
-                self.redirect(uri, permanent=True)
-                return
+            uri = self.request.path + "/"
+            if self.request.query:
+                uri += "?" + self.request.query
+            self.redirect(uri, permanent=True)
+            return
 
         self.request.path = (
             path if self.request.query
