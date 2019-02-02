@@ -8,6 +8,8 @@ import itertools
 from collections import namedtuple
 import logging
 
+import six
+
 sys.argv = ["tensorboard"]
 
 from tensorboard.backend import application   # noqa
@@ -15,6 +17,15 @@ from tensorboard.backend import application   # noqa
 try:
     # Tensorboard 0.4.x above series
     from tensorboard import default
+
+    if not hasattr(application, "reload_multiplexer"):
+        # Tensorflow 1.12 removed reload_multiplexer, patch it
+        def reload_multiplexer(multiplexer, path_to_run):
+            for path, name in six.iteritems(path_to_run):
+                multiplexer.AddRunsFromDirectory(path, name)
+            multiplexer.Reload()
+        application.reload_multiplexer = reload_multiplexer
+
     if hasattr(default, 'PLUGIN_LOADERS') or hasattr(default, '_PLUGINS'):
         # Tensorflow 1.10 or above series
         logging.debug("Tensorboard 1.10 or above series detected")
