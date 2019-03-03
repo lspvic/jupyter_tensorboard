@@ -51,7 +51,7 @@ Once `jupyter_tensorboard` is installed and enabled, and your notebook server ha
 
 .. image:: https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_menu.png
 
-- In notebook ``running`` tab, a list of tensorboard instances are showed. Managing operations such as browsing, navigating, shutdown  can be found here. 
+- In notebook ``running`` tab, a list of tensorboard instances are showed. Managing operations such as browsing, navigating, shutdown  can be found here.
 
 .. image:: https://github.com/lspvic/jupyter_tensorboard/raw/master/docs/_static/tensorboard_list.png
 
@@ -105,7 +105,7 @@ Thanks all the contributors and others for making significant contributions (rep
 .. |pypi-pyversions| image:: https://img.shields.io/pypi/pyversions/jupyter_tensorboard.svg
     :target: https://pypi.python.org/pypi/jupyter_tensorboard
 
-.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-%E2%89%A51.3,%E2%89%A41.12-blue.svg
+.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-%E2%89%A51.3,%E2%89%A41.13-blue.svg
     :target: https://github.com/tensorflow/tensorflow/releases
 
 .. |docker-stars| image:: https://img.shields.io/docker/stars/lspvic/tensorboard-notebook.svg
