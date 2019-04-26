@@ -95,6 +95,7 @@ Thanks
 Thanks all the contributors and others for making significant contributions (report bugs, fix bugs, make enhancements, etc).
 
 * `@ferrarodav <https://github.com/ferrarodav>`_ - PR `32 <https://github.com/lspvic/jupyter_tensorboard/pull/32>`_ .
+* `@tcbegley <https://github.com/tcbegley>` _ - PR `48 <https://github.com/lspvic/jupyter_tensorboard/pull/48>`_ .
 
 .. |build-status| image:: https://img.shields.io/travis/lspvic/jupyter_tensorboard.svg
     :target: https://travis-ci.org/lspvic/jupyter_tensorboard
