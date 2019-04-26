@@ -6,7 +6,7 @@ define([
     'tree/js/notebooklist',
 ], function($, Jupyter, dialog, utils, notebooklist) {
     "use strict";
-    
+
     var TensorboardList = function (selector, options) {
         this.base_url = Jupyter.notebook_list.base_url;
         this.init_elements();
@@ -48,7 +48,7 @@ define([
             .attr('type', 'text/css')
             .attr('href', static_url + 'style.css')
         );
-        
+
         // tensorboad running list panel
         $("#accordion").append('<div class="panel panel-default">\
               <div class="panel-heading">\
@@ -66,29 +66,61 @@ define([
                 </div>\
               </div>\
             </div>');
-        
+
         // new tensorboard menu on current directory
-        $("#new-menu").append('<li role="presentation" id="new-tensorboard">\
-                <a role="menuitem" tabindex="-1" href="#">Tensorboard</a>\
+        $("#new-menu").append('<li role="presentation" class="dropdown-submenu dropleft">\
+                <a role="menuitem" tabindex="-1" href="#">Tensorboard...</a>\
+                <ul class="dropdown-menu" style="right:100%;left:-100%">\
+                  <li id="new-tensorboard"><a>Current directory</a></li>\
+                  <li id="new-tensorboard-custom"><a>Custom directory...</a></li>\
+                </ul>\
             </li>');
-            
+
         // tensorboard button when select a directory
         $(".dynamic-buttons:first").append('<button id="#tensorboard-button"\
             title="Create Tensorboard Instance with selected logdir"\
             class="tensorboard-button btn btn-default btn-xs">Tensorboard</button>');
     };
-    
+
     TensorboardList.prototype.bind_events = function () {
         var that = this;
+
         $('#refresh_running_list').click(function () {
             that.load_tensorboards();
         });
         $('#new-tensorboard').click($.proxy(function(){
             that.new_tensorboard(Jupyter.notebook_list.notebook_path);
         }, this));
+        $('#new-tensorboard-custom').click(function () {
+            that.dir_selection_dialog();
+        });
         $(".tensorboard-button").click($.proxy(function(){
             that.new_tensorboard(Jupyter.notebook_list.selected[0].path);
         }, this));
+    };
+
+    TensorboardList.prototype.dir_selection_dialog = function() {
+        var that = this;
+        dialog.modal({
+            title : 'Specify a log directory',
+            body : '<div class="form-group">\
+              <input id="tensorboard-dir-input" class="form-control" type="text" placeholder="Type path to directory"/>\
+              <small class="form-text text-muted">Specify a relative or absolute path</small>\
+            </div>',
+            sanitize: false,
+            buttons: {
+                'Cancel': {'class' : 'btn-secondary'},
+                'OK': {
+                    'class': 'btn-primary',
+                    'id': 'new-tensorboard-custom-submit',
+                    'click': function() {
+                        that.new_tensorboard($('#tensorboard-dir-input').val());
+                    }
+                }
+            },
+            notebook: Jupyter.notebook,
+            keyboard_manager: Jupyter.keyboard_manager
+        });
     };
 
     TensorboardList.prototype.new_tensorboard = function (logdir) {
@@ -101,7 +133,7 @@ define([
                 success : function (data, status, xhr) {
                     that.load_tensorboards();
                     var name = data.name;
-                    var loc = utils.url_path_join(that.base_url, 'tensorboard', 
+                    var loc = utils.url_path_join(that.base_url, 'tensorboard',
                         utils.encode_uri_components(name)) + "/";
                     var win = window.open(loc, 'tensorboard' + name);
                 },
@@ -109,7 +141,7 @@ define([
             };
             var url = utils.url_path_join(this.base_url, 'api/tensorboard');
             utils.ajax(url, settings);
-            
+
             var list_items = $('.list_item');
             for (var i=0; i<list_items.length; i++) {
                 var $list_item = $(list_items[i]);

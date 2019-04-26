@@ -10,7 +10,11 @@ from .handlers import notebook_dir
 
 
 def _trim_notebook_dir(dir):
-    return os.path.join("<notebook_dir>", os.path.relpath(dir, notebook_dir))
+    if not dir.startswith("/"):
+        return os.path.join(
+            "<notebook_dir>", os.path.relpath(dir, notebook_dir)
+        )
+    return dir
 
 
 class TbRootHandler(APIHandler):
