@@ -26,8 +26,8 @@ class TensorboardTab extends IFrame {
   /**
    * Construct a new tensorboard widget.
    */
-  constructor(options: Partial<TensorboardTab.IOptions>) {
-    super();
+  constructor(options?: TensorboardTab.IOptions) {
+    super({sandbox: ['allow-scripts', 'allow-forms', 'allow-same-origin']});
     this.addClass(TENSORBOARD_CLASS);
     this.tensorboard = this._tensorboard = options.model;
     this.url = Tensorboard.getUrl(this._tensorboard.name);
@@ -39,7 +39,7 @@ class TensorboardTab extends IFrame {
     this.title.closable = true;
     let caption = `Name: Tensorboard ${this._tensorboard.name}\nLogdir: ${this._tensorboard.logdir}`;
     this.title.caption = caption;
-  }
+  };
 
   readonly tensorboard: Tensorboard.IModel;
 
@@ -49,23 +49,21 @@ class TensorboardTab extends IFrame {
   dispose(): void {
     this._tensorboard = null;
     super.dispose();
-  }
+  };
 
   protected onCloseRequest(msg: Message): void {
     super.onCloseRequest(msg);
     this.dispose();
-  }
+  };
 
   private _tensorboard: Tensorboard.IModel;
 }
 
-export
-namespace TensorboardTab {
+export declare namespace TensorboardTab {
 
   /**
    * Options of the tensorboard widget.
    */
-  export
   interface IOptions {
     /**
      * The model of tensorboard instance.

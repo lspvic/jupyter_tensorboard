@@ -1,9 +1,9 @@
 import {
-  ILayoutRestorer, JupyterLab, JupyterLabPlugin
+  ILayoutRestorer, JupyterFrontEnd, JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
 import {
-  ICommandPalette, InstanceTracker, IInstanceTracker, showDialog, Dialog
+  ICommandPalette, WidgetTracker, IWidgetTracker, showDialog, Dialog, MainAreaWidget
 } from '@jupyterlab/apputils';
 
 import {
@@ -50,24 +50,24 @@ namespace CommandIDs {
 /**
  * Initialization data for the tensorboard extension.
  */
-const extension: JupyterLabPlugin<IInstanceTracker<TensorboardTab>> = {
-  activate,
+const extension: JupyterFrontEndPlugin<IWidgetTracker<MainAreaWidget<TensorboardTab>>> = {
   id: 'tensorboard',
   requires: [ILayoutRestorer, ICommandPalette],
   optional: [ILauncher],
   autoStart: true,
+  activate,
 };
 
 export default extension;
 
-function activate(app: JupyterLab, restorer: ILayoutRestorer, palette: ICommandPalette, launcher: ILauncher | null): InstanceTracker<TensorboardTab> {
+function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICommandPalette, launcher: ILauncher | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
   let manager = new TensorboardManager();
   let running = new RunningTensorboards({manager: manager});
   running.id = 'jp-Tensorboards';
   running.title.label = 'Tensorboards';
   
   const namespace = 'tensorboard';
-  const tracker = new InstanceTracker<TensorboardTab>({ namespace })
+  const tracker = new WidgetTracker<MainAreaWidget<TensorboardTab>>({ namespace })
 
   // Let the application restorer track the running panel for restoration of
   // application state (e.g. setting the running panel as the current side bar
@@ -86,7 +86,7 @@ function activate(app: JupyterLab, restorer: ILayoutRestorer, palette: ICommandP
 
   palette.addItem({ command: CommandIDs.inputDirect , category: 'Tensorboard' });
 
-  app.shell.addToLeftArea(running, {rank: 300});
+  app.shell.add(running, "left",{rank: 300});
   return tracker
 }
 
@@ -94,7 +94,7 @@ function activate(app: JupyterLab, restorer: ILayoutRestorer, palette: ICommandP
  * Add the commands for the tensorboard.
  */
 export
-function addCommands(app: JupyterLab, manager: TensorboardManager, tracker: InstanceTracker<TensorboardTab>, launcher: ILauncher | null) {
+function addCommands(app: JupyterFrontEnd, manager: TensorboardManager, tracker: WidgetTracker<MainAreaWidget<TensorboardTab>>, launcher: ILauncher | null) {
   let { commands, serviceManager } = app;
 
   commands.addCommand(CommandIDs.open, {
@@ -103,15 +103,16 @@ function addCommands(app: JupyterLab, manager: TensorboardManager, tracker: Inst
       
       // Check for a running tensorboard with the given model.
       const widget = tracker.find(value => {
-        return value.tensorboard && value.tensorboard.name === model.name || false;
+        return value.content.tensorboard && value.content.tensorboard.name === model.name || false;
       });
       if (widget) {
         app.shell.activateById(widget.id);
         return widget;
       } else {
-        let tb = new TensorboardTab({ model });
+        let t = new TensorboardTab({model});
+        let tb = new MainAreaWidget({ content: t });
         tracker.add(tb);
-        app.shell.addToMainArea(tb);
+        app.shell.add(tb, "main");
         app.shell.activateById(tb.id);
         return tb;
       }
@@ -123,7 +124,7 @@ function addCommands(app: JupyterLab, manager: TensorboardManager, tracker: Inst
       const model = args['tb'] as Tensorboard.IModel;
 
       const widget = tracker.find(value => {
-        return value.tensorboard && value.tensorboard.name === model.name || false;
+        return value.content.tensorboard && value.content.tensorboard.name === model.name || false;
       });
       if (widget) {
         widget.dispose();
