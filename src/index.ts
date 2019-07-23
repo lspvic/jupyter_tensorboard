@@ -10,6 +10,14 @@ import {
   ILauncher
 } from '@jupyterlab/launcher';
 
+import {
+  IMainMenu
+} from '@jupyterlab/mainmenu';
+
+import {
+  IFileBrowserFactory
+} from '@jupyterlab/filebrowser';
+
 import { 
   RunningTensorboards
 } from './panel';
@@ -52,15 +60,15 @@ namespace CommandIDs {
  */
 const extension: JupyterFrontEndPlugin<IWidgetTracker<MainAreaWidget<TensorboardTab>>> = {
   id: 'tensorboard',
-  requires: [ILayoutRestorer, ICommandPalette],
-  optional: [ILauncher],
+  requires: [ILayoutRestorer, ICommandPalette, IFileBrowserFactory],
+  optional: [ILauncher, IMainMenu],
   autoStart: true,
   activate,
 };
 
 export default extension;
 
-function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICommandPalette, launcher: ILauncher | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
+function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICommandPalette, browserFactory: IFileBrowserFactory, launcher: ILauncher | null, menu: IMainMenu | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
   let manager = new TensorboardManager();
   let running = new RunningTensorboards({manager: manager});
   running.id = 'jp-Tensorboards';
@@ -74,7 +82,7 @@ function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICom
   // widget).
   restorer.add(running, 'Tensorboards');
 
-  addCommands(app, manager, tracker, launcher);
+  addCommands(app, manager, tracker, browserFactory, launcher, menu);
 
   running.tensorboardOpenRequested.connect((sender, model) => {
     app.commands.execute('tensorboard:open', { tb: model });
@@ -94,7 +102,7 @@ function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICom
  * Add the commands for the tensorboard.
  */
 export
-function addCommands(app: JupyterFrontEnd, manager: TensorboardManager, tracker: WidgetTracker<MainAreaWidget<TensorboardTab>>, launcher: ILauncher | null) {
+function addCommands(app: JupyterFrontEnd, manager: TensorboardManager, tracker: WidgetTracker<MainAreaWidget<TensorboardTab>>, browserFactory: IFileBrowserFactory, launcher: ILauncher | null, menu: IMainMenu | null) {
   let { commands, serviceManager } = app;
 
   commands.addCommand(CommandIDs.open, {
@@ -157,7 +165,8 @@ function addCommands(app: JupyterFrontEnd, manager: TensorboardManager, tracker:
     caption: 'Start a new tensorboard',
     iconClass: args => (args['isPalette'] ? '' : TENSORBOARD_ICON_CLASS),
     execute: args => {
-      const logdir = typeof args['logdir'] === 'undefined' ? args['cwd'] as string : args['logdir'] as string;
+      let cwd = args['cwd'] as string || browserFactory.defaultBrowser.model.path;
+      const logdir = typeof args['logdir'] === 'undefined' ? cwd : args['logdir'] as string;
       return serviceManager.contents.get(logdir, { type: 'directory'}).then(dir => {
           return manager.startNew(dir.path).then(tb => {
             return app.commands.execute(CommandIDs.open, { tb: tb.model});
@@ -179,5 +188,11 @@ function addCommands(app: JupyterFrontEnd, manager: TensorboardManager, tracker:
           category: 'Other',
           rank: 2,
       });
+  }
+
+  if (menu) {
+    menu.fileMenu.newMenu.addGroup([{
+      command: CommandIDs.createNew
+    }], 30);
   }
 }
