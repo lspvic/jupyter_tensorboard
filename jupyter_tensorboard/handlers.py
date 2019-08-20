@@ -70,6 +70,27 @@ class TensorboardHandler(IPythonHandler):
         else:
             raise web.HTTPError(404)
 
+    @web.authenticated
+    def post(self, name, path):
+
+        if path == "":
+            uri = self.request.path + "/"
+            if self.request.query:
+                uri += "?" + self.request.query
+            self.redirect(uri, permanent=True)
+            return
+
+        self.request.path = (
+            path if self.request.query
+            else "%s?%s" % (path, self.request.query))
+
+        manager = self.settings["tensorboard_manager"]
+        if name in manager:
+            tb_app = manager[name].tb_app
+            WSGIContainer(tb_app)(self.request)
+        else:
+            raise web.HTTPError(404)
+
 
 class TensorboardErrorHandler(IPythonHandler):
     pass
