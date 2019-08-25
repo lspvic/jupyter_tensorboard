@@ -107,12 +107,16 @@ class TensorboardHandler(IPythonHandler):
             return super(TensorboardHandler, self).check_xsrf_cookie()
         except web.HTTPError:
             if self.request.method in {"GET", "POST", "HEAD"}:
-                # Consider Referer a sufficient cross-origin check for GET requests
-                # Extended to post for Tensorboard API
+                # Consider Referer a sufficient cross-origin check for GET
+                # requests, mirrors logic in IPythonHandler.check_xsrf_cookie.
+                # Extended to POST for Tensorboard API.
                 if not self.check_referer():
                     referer = self.request.headers.get("Referer")
                     if referer:
-                        msg = "Blocking Cross Origin request from {}.".format(referer)
+                        msg = (
+                            "Blocking Cross Origin request from {}."
+                            .format(referer)
+                        )
                     else:
                         msg = "Blocking request from unknown origin"
                     raise web.HTTPError(403, msg)
