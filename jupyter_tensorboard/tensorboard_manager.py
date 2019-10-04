@@ -108,7 +108,63 @@ def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
     return thread
 
 
-def TensorBoardWSGIApp(logdir, plugins, multiplexer,
+def is_tensorboard_greater_than_or_equal_to20():
+    import tensorflow
+    version = tensorflow.__version__.split(".")
+    return int(version[0]) >= 2
+
+
+def TensorBoardWSGIApp_2x(
+    flags,
+    plugins,
+    data_provider=None,
+    assets_zip_provider=None,
+    deprecated_multiplexer=None):
+
+    logdir = flags.logdir
+    multiplexer = deprecated_multiplexer
+    reload_interval = flags.reload_interval
+
+    path_to_run = application.parse_event_files_spec(logdir)
+    if reload_interval:
+        thread = start_reloading_multiplexer(
+            multiplexer, path_to_run, reload_interval)
+    else:
+        application.reload_multiplexer(multiplexer, path_to_run)
+        thread = None
+
+
+    db_uri = None
+    db_connection_provider = None
+
+    plugin_name_to_instance = {}
+
+    from tensorboard.plugins import base_plugin
+    context = base_plugin.TBContext(
+        data_provider=data_provider,
+        db_connection_provider=db_connection_provider,
+        db_uri=db_uri,
+        flags=flags,
+        logdir=flags.logdir,
+        multiplexer=deprecated_multiplexer,
+        assets_zip_provider=assets_zip_provider,
+        plugin_name_to_instance=plugin_name_to_instance,
+        window_title=flags.window_title)
+
+    tbplugins = []
+    for loader in plugins:
+        plugin = loader.load(context)
+        if plugin is None:
+            continue
+        tbplugins.append(plugin)
+        plugin_name_to_instance[plugin.plugin_name] = plugin
+
+    tb_app = application.TensorBoardWSGI(tbplugins)
+    manager.add_instance(logdir, tb_app, thread)
+    return tb_app
+
+
+def TensorBoardWSGIApp_1x(logdir, plugins, multiplexer,
                        reload_interval, path_prefix="", reload_task="auto"):
     path_to_run = application.parse_event_files_spec(logdir)
     if reload_interval:
@@ -122,7 +178,10 @@ def TensorBoardWSGIApp(logdir, plugins, multiplexer,
     return tb_app
 
 
-application.TensorBoardWSGIApp = TensorBoardWSGIApp
+if is_tensorboard_greater_than_or_equal_to20():
+    application.TensorBoardWSGIApp = TensorBoardWSGIApp_2x
+else:
+    application.TensorBoardWSGIApp = TensorBoardWSGIApp_1x
 
 
 class TensorboardManger(dict):
