@@ -16,7 +16,7 @@ def tf_logs(tmpdir_factory):
     try:
         import tensorflow.compat.v1 as tf
         tf.disable_v2_behavior()
-    except:
+    except ModuleNotFoundError:
         import tensorflow as tf
 
     x = np.random.rand(5)

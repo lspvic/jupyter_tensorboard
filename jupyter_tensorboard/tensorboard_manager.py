@@ -115,11 +115,10 @@ def is_tensorboard_greater_than_or_equal_to20():
 
 
 def TensorBoardWSGIApp_2x(
-    flags,
-    plugins,
-    data_provider=None,
-    assets_zip_provider=None,
-    deprecated_multiplexer=None):
+        flags, plugins,
+        data_provider=None,
+        assets_zip_provider=None,
+        deprecated_multiplexer=None):
 
     logdir = flags.logdir
     multiplexer = deprecated_multiplexer
@@ -132,7 +131,6 @@ def TensorBoardWSGIApp_2x(
     else:
         application.reload_multiplexer(multiplexer, path_to_run)
         thread = None
-
 
     db_uri = None
     db_connection_provider = None
@@ -164,8 +162,9 @@ def TensorBoardWSGIApp_2x(
     return tb_app
 
 
-def TensorBoardWSGIApp_1x(logdir, plugins, multiplexer,
-                       reload_interval, path_prefix="", reload_task="auto"):
+def TensorBoardWSGIApp_1x(
+        logdir, plugins, multiplexer,
+        reload_interval, path_prefix="", reload_task="auto"):
     path_to_run = application.parse_event_files_spec(logdir)
     if reload_interval:
         thread = start_reloading_multiplexer(
