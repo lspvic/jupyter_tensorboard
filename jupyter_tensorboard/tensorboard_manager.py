@@ -4,6 +4,7 @@ import os
 import sys
 import threading
 import time
+import inspect
 import itertools
 from collections import namedtuple
 import logging
@@ -109,9 +110,23 @@ def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
 
 
 def is_tensorboard_greater_than_or_equal_to20():
-    import tensorflow
-    version = tensorflow.__version__.split(".")
-    return int(version[0]) >= 2
+    # tensorflow<1.4 will be
+    # (logdir, plugins, multiplexer, reload_interval)
+
+    # tensorflow>=1.4, <1.12 will be
+    # (logdir, plugins, multiplexer, reload_interval, path_prefix)
+
+    # tensorflow>=1.12, <1.14 will be
+    # (logdir, plugins, multiplexer, reload_interval,
+    #  path_prefix='', reload_task='auto')
+
+    # tensorflow 2.0 will be
+    # (flags, plugins, data_provider=None, assets_zip_provider=None,
+    #  deprecated_multiplexer=None)
+
+    s = inspect.signature(application.TensorBoardWSGIApp)
+    first_parameter_name = list(s.parameters.keys())[0]
+    return first_parameter_name == 'flags'
 
 
 def TensorBoardWSGIApp_2x(
