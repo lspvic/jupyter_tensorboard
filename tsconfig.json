@@ -10,7 +10,9 @@
     "target": "es2015",
     "strict": true,
     "strictNullChecks": false,
-    "types": []
+    "types": [],
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react"
   },
   "include": ["src/*"]
 }
