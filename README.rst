@@ -96,6 +96,7 @@ Thanks all the contributors and others for making significant contributions (rep
 
 * `@ferrarodav <https://github.com/ferrarodav>`_ - PR `32 <https://github.com/lspvic/jupyter_tensorboard/pull/32>`_ .
 * `@tcbegley <https://github.com/tcbegley>`_ - PR `48 <https://github.com/lspvic/jupyter_tensorboard/pull/48>`_ .
+* `@qrtt1 <https://github.com/qrtt1>`_ - TF2.0 support, PR `56 <https://github.com/lspvic/jupyter_tensorboard/pull/56>`_ .
 
 .. |build-status| image:: https://img.shields.io/travis/lspvic/jupyter_tensorboard.svg
     :target: https://travis-ci.org/lspvic/jupyter_tensorboard
@@ -106,7 +107,7 @@ Thanks all the contributors and others for making significant contributions (rep
 .. |pypi-pyversions| image:: https://img.shields.io/pypi/pyversions/jupyter_tensorboard.svg
     :target: https://pypi.python.org/pypi/jupyter_tensorboard
 
-.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-%E2%89%A51.3,%E2%89%A41.13-blue.svg
+.. |tf-versions| image:: https://img.shields.io/badge/tensorflow-%E2%89%A51.3,%E2%89%A42.0-blue.svg
     :target: https://github.com/tensorflow/tensorflow/releases
 
 .. |docker-stars| image:: https://img.shields.io/docker/stars/lspvic/tensorboard-notebook.svg

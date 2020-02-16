@@ -2,7 +2,7 @@
 
 from .handlers import load_jupyter_server_extension   # noqa
 
-__version__ = "0.1.10"
+__version__ = "0.2.0"
 
 
 def _jupyter_nbextension_paths():
