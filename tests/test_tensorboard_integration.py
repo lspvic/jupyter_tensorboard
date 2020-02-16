@@ -13,7 +13,12 @@ from tornado.testing import AsyncHTTPTestCase
 def tf_logs(tmpdir_factory):
 
     import numpy as np
-    import tensorflow as tf
+    try:
+        import tensorflow.compat.v1 as tf
+        tf.disable_v2_behavior()
+    except ImportError:
+        import tensorflow as tf
+
     x = np.random.rand(5)
     y = 3 * x + 1 + 0.05 * np.random.rand(5)
 

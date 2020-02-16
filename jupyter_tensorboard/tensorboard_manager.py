@@ -4,6 +4,7 @@ import os
 import sys
 import threading
 import time
+import inspect
 import itertools
 from collections import namedtuple
 import logging
@@ -108,8 +109,77 @@ def start_reloading_multiplexer(multiplexer, path_to_run, reload_interval):
     return thread
 
 
-def TensorBoardWSGIApp(logdir, plugins, multiplexer,
-                       reload_interval, path_prefix="", reload_task="auto"):
+def is_tensorboard_greater_than_or_equal_to20():
+    # tensorflow<1.4 will be
+    # (logdir, plugins, multiplexer, reload_interval)
+
+    # tensorflow>=1.4, <1.12 will be
+    # (logdir, plugins, multiplexer, reload_interval, path_prefix)
+
+    # tensorflow>=1.12, <1.14 will be
+    # (logdir, plugins, multiplexer, reload_interval,
+    #  path_prefix='', reload_task='auto')
+
+    # tensorflow 2.0 will be
+    # (flags, plugins, data_provider=None, assets_zip_provider=None,
+    #  deprecated_multiplexer=None)
+
+    s = inspect.signature(application.TensorBoardWSGIApp)
+    first_parameter_name = list(s.parameters.keys())[0]
+    return first_parameter_name == 'flags'
+
+
+def TensorBoardWSGIApp_2x(
+        flags, plugins,
+        data_provider=None,
+        assets_zip_provider=None,
+        deprecated_multiplexer=None):
+
+    logdir = flags.logdir
+    multiplexer = deprecated_multiplexer
+    reload_interval = flags.reload_interval
+
+    path_to_run = application.parse_event_files_spec(logdir)
+    if reload_interval:
+        thread = start_reloading_multiplexer(
+            multiplexer, path_to_run, reload_interval)
+    else:
+        application.reload_multiplexer(multiplexer, path_to_run)
+        thread = None
+
+    db_uri = None
+    db_connection_provider = None
+
+    plugin_name_to_instance = {}
+
+    from tensorboard.plugins import base_plugin
+    context = base_plugin.TBContext(
+        data_provider=data_provider,
+        db_connection_provider=db_connection_provider,
+        db_uri=db_uri,
+        flags=flags,
+        logdir=flags.logdir,
+        multiplexer=deprecated_multiplexer,
+        assets_zip_provider=assets_zip_provider,
+        plugin_name_to_instance=plugin_name_to_instance,
+        window_title=flags.window_title)
+
+    tbplugins = []
+    for loader in plugins:
+        plugin = loader.load(context)
+        if plugin is None:
+            continue
+        tbplugins.append(plugin)
+        plugin_name_to_instance[plugin.plugin_name] = plugin
+
+    tb_app = application.TensorBoardWSGI(tbplugins)
+    manager.add_instance(logdir, tb_app, thread)
+    return tb_app
+
+
+def TensorBoardWSGIApp_1x(
+        logdir, plugins, multiplexer,
+        reload_interval, path_prefix="", reload_task="auto"):
     path_to_run = application.parse_event_files_spec(logdir)
     if reload_interval:
         thread = start_reloading_multiplexer(
@@ -122,7 +192,10 @@ def TensorBoardWSGIApp(logdir, plugins, multiplexer,
     return tb_app
 
 
-application.TensorBoardWSGIApp = TensorBoardWSGIApp
+if is_tensorboard_greater_than_or_equal_to20():
+    application.TensorBoardWSGIApp = TensorBoardWSGIApp_2x
+else:
+    application.TensorBoardWSGIApp = TensorBoardWSGIApp_1x
 
 
 class TensorboardManger(dict):
