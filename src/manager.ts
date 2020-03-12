@@ -2,15 +2,15 @@
 
 import { 
   IIterator, ArrayExt, iter
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
     Signal, ISignal
-} from '@phosphor/signaling';
+} from '@lumino/signaling';
 
 import {
   JSONExt
-} from '@phosphor/coreutils';
+} from '@lumino/coreutils';
 
 import { 
   Tensorboard

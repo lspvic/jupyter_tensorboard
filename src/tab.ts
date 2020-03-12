@@ -4,7 +4,7 @@ import {
 
 import {
   Message
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
   Tensorboard
@@ -12,7 +12,7 @@ import {
 
 import { 
   Widget 
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 const TENSORBOARD_CLASS = 'jp-Tensorboard';
 

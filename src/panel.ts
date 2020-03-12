@@ -4,15 +4,15 @@ import {
 
 import {
   Message
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
   Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     ElementExt
-} from '@phosphor/domutils';
+} from '@lumino/domutils';
 
 import {
   DOMUtils, Dialog, showDialog
@@ -24,7 +24,7 @@ import {
 
 import { 
   Signal, ISignal 
-} from '@phosphor/signaling';
+} from '@lumino/signaling';
 
 
 /**
