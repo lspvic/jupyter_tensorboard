@@ -19,15 +19,16 @@
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "style": "style/index.css",
   "repository": {
     "type": "git",
     "url": "https://github.com/chaoleili/jupyterlab_tensorboard.git"
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf lib",
-    "watch": "tsc -w",
-    "prepare": "npm run clean && npm run build"
+    "clean": "rimraf lib tsconfig.tsbuildinfo",
+    "prepare": "jlpm run clean && jlpm run build",
+    "watch": "tsc -w"
   },
   "dependencies": {
     "@jupyterlab/application": "^2.0.0",
@@ -47,8 +48,11 @@
   },
   "devDependencies": {
     "rimraf": "^3.0.0",
-    "typescript": "~3.7.0"
+    "typescript": "~3.8.0"
   },
+  "sideEffects": [
+    "style/*.css"
+  ],
   "jupyterlab": {
     "extension": true
   }

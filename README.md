@@ -1,5 +1,7 @@
 # Jupyterlab-Tensorboard
 
+![Github Actions Status](https://github.com/chaoleili/jupyterlab_tensorboard/workflows/Build/badge.svg)
+
 A JupyterLab extension for tensorboard.
 
 > Note: This project is just a frontend extension for tensorboard on jupyterlab. It uses the [jupyter_tensorboard](https://github.com/lspvic/jupyter_tensorboard) project as tensorboard backend.
