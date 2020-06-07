@@ -26,6 +26,12 @@ Installation
 
 #.  Restart the jupyter notebook server.
 
+Run 
+
+```
+jupyter tensorboard enable
+```
+
 Use jupyter-tensorboard in docker containers
 ++++++++++++++++++++++++++++++++++++++++++++
 
