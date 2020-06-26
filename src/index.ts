@@ -118,7 +118,9 @@ function addRunningSessionManager(
       return `tensorboards/${this._model.name}`;
     }
     shutdown() {
+      app.commands.execute(CommandIDs.close, { tb: this._model });
       return manager.shutdown(this._model.name);
+
     }
 
     private _model: Tensorboard.IModel;
