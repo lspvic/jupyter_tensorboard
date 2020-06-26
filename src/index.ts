@@ -1,5 +1,5 @@
 import {
-  ILayoutRestorer, JupyterFrontEnd, JupyterFrontEndPlugin
+  JupyterFrontEnd, JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
 import {
@@ -17,10 +17,6 @@ import {
 import {
   IFileBrowserFactory
 } from '@jupyterlab/filebrowser';
-
-import { 
-  RunningTensorboards
-} from './panel';
 
 import {
   TensorboardManager
@@ -73,7 +69,7 @@ namespace CommandIDs {
  */
 const extension: JupyterFrontEndPlugin<IWidgetTracker<MainAreaWidget<TensorboardTab>>> = {
   id: 'tensorboard',
-  requires: [ILayoutRestorer, ICommandPalette, IFileBrowserFactory],
+  requires: [ICommandPalette, IFileBrowserFactory],
   optional: [ILauncher, IMainMenu, IRunningSessionManagers],
   autoStart: true,
   activate,
@@ -81,29 +77,13 @@ const extension: JupyterFrontEndPlugin<IWidgetTracker<MainAreaWidget<Tensorboard
 
 export default extension;
 
-function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICommandPalette, browserFactory: IFileBrowserFactory, launcher: ILauncher | null, menu: IMainMenu | null, runningSessionManagers: IRunningSessionManagers | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
+function activate(app: JupyterFrontEnd, palette: ICommandPalette, browserFactory: IFileBrowserFactory, launcher: ILauncher | null, menu: IMainMenu | null, runningSessionManagers: IRunningSessionManagers | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
   let manager = new TensorboardManager();
-  let running = new RunningTensorboards({manager: manager});
-  running.id = 'jp-Tensorboards';
-  running.title.label = 'Tensorboards';
   
   const namespace = 'tensorboard';
   const tracker = new WidgetTracker<MainAreaWidget<TensorboardTab>>({ namespace })
 
-  // Let the application restorer track the running panel for restoration of
-  // application state (e.g. setting the running panel as the current side bar
-  // widget).
-  restorer.add(running, 'Tensorboards');
-
   addCommands(app, manager, tracker, browserFactory, launcher, menu);
-
-  running.tensorboardOpenRequested.connect((sender, model) => {
-    app.commands.execute('tensorboard:open', { tb: model });
-  });
-
-  running.tensorboardShutdownRequested.connect((sender, model) => {
-    app.commands.execute('tensorboard:close', { tb: model });
-  })
 
   if (runningSessionManagers) {
     addRunningSessionManager(runningSessionManagers, app, manager);
@@ -111,7 +91,6 @@ function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICom
 
   palette.addItem({ command: CommandIDs.inputDirect , category: 'Tensorboard' });
 
-  app.shell.add(running, "left",{rank: 300});
   return tracker
 }
 
