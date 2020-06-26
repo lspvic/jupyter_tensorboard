@@ -34,9 +34,22 @@ import {
   TensorboardTab, OpenLogdirWidget
 } from './tab';
 
+import { IRunningSessionManagers, IRunningSessions } from '@jupyterlab/running';
+
+import { toArray } from '@lumino/algorithm';
+
+import { LabIcon } from '@jupyterlab/ui-components';
+
+import tensorboardSvgstr from '../style/tensorboard.svg';
+
 import '../style/index.css';
 
 const TENSORBOARD_ICON_CLASS = 'jp-Tensorboard-icon';
+
+export const tensorboardIcon = new LabIcon({
+  name: 'jupyterlab-tensorboard:tensorboard',
+  svgstr: tensorboardSvgstr
+});
 
 /**
  * The command IDs used by the tensorboard plugin.
@@ -61,14 +74,14 @@ namespace CommandIDs {
 const extension: JupyterFrontEndPlugin<IWidgetTracker<MainAreaWidget<TensorboardTab>>> = {
   id: 'tensorboard',
   requires: [ILayoutRestorer, ICommandPalette, IFileBrowserFactory],
-  optional: [ILauncher, IMainMenu],
+  optional: [ILauncher, IMainMenu, IRunningSessionManagers],
   autoStart: true,
   activate,
 };
 
 export default extension;
 
-function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICommandPalette, browserFactory: IFileBrowserFactory, launcher: ILauncher | null, menu: IMainMenu | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
+function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICommandPalette, browserFactory: IFileBrowserFactory, launcher: ILauncher | null, menu: IMainMenu | null, runningSessionManagers: IRunningSessionManagers | null): WidgetTracker<MainAreaWidget<TensorboardTab>> {
   let manager = new TensorboardManager();
   let running = new RunningTensorboards({manager: manager});
   running.id = 'jp-Tensorboards';
@@ -92,10 +105,49 @@ function activate(app: JupyterFrontEnd, restorer: ILayoutRestorer, palette: ICom
     app.commands.execute('tensorboard:close', { tb: model });
   })
 
+  if (runningSessionManagers) {
+    addRunningSessionManager(runningSessionManagers, app, manager);
+  }
+
   palette.addItem({ command: CommandIDs.inputDirect , category: 'Tensorboard' });
 
   app.shell.add(running, "left",{rank: 300});
   return tracker
+}
+
+function addRunningSessionManager(
+  managers: IRunningSessionManagers,
+  app: JupyterFrontEnd,
+  manager: TensorboardManager
+) {
+  managers.add({
+    name: 'Tensorboard',
+    running: () =>
+      toArray(manager.running()).map(model => new RunningTensorboard(model)),
+    shutdownAll: () => manager.shutdownAll(),
+    refreshRunning: () => manager.refreshRunning(),
+    runningChanged: manager.runningChanged
+  });
+
+  class RunningTensorboard implements IRunningSessions.IRunningItem {
+    constructor(model: Tensorboard.IModel) {
+      this._model = model;
+    }
+    open() {
+      app.commands.execute('tensorboard:open', { tb: this._model });
+    }
+    icon() {
+      return tensorboardIcon;
+    }
+    label() {
+      return `tensorboards/${this._model.name}`;
+    }
+    shutdown() {
+      return manager.shutdown(this._model.name);
+    }
+
+    private _model: Tensorboard.IModel;
+  }
 }
 
 /**
