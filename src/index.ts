@@ -38,10 +38,6 @@ import { LabIcon } from '@jupyterlab/ui-components';
 
 import tensorboardSvgstr from '../style/tensorboard.svg';
 
-import '../style/index.css';
-
-const TENSORBOARD_ICON_CLASS = 'jp-Tensorboard-icon';
-
 export const tensorboardIcon = new LabIcon({
   name: 'jupyterlab-tensorboard:tensorboard',
   svgstr: tensorboardSvgstr
@@ -113,7 +109,7 @@ function addRunningSessionManager(
       this._model = model;
     }
     open() {
-      app.commands.execute('tensorboard:open', { tb: this._model });
+      app.commands.execute(CommandIDs.open, { tb: this._model });
     }
     icon() {
       return tensorboardIcon;
@@ -194,7 +190,7 @@ function addCommands(app: JupyterFrontEnd, manager: TensorboardManager, tracker:
   commands.addCommand(CommandIDs.createNew, {
     label: args => (args['isPalette'] ? 'New Tensorbaord' : 'Tensorboard'),
     caption: 'Start a new tensorboard',
-    iconClass: args => (args['isPalette'] ? '' : TENSORBOARD_ICON_CLASS),
+    icon: args => (args['isPalette'] ? undefined : tensorboardIcon),
     execute: args => {
       let cwd = args['cwd'] as string || browserFactory.defaultBrowser.model.path;
       const logdir = typeof args['logdir'] === 'undefined' ? cwd : args['logdir'] as string;
