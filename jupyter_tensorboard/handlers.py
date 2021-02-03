@@ -59,9 +59,7 @@ class TensorboardHandler(IPythonHandler):
             self.redirect(uri, permanent=True)
             return
 
-        self.request.path = (
-            path if self.request.query
-            else "%s?%s" % (path, self.request.query))
+        self.request.path = path
 
         manager = self.settings["tensorboard_manager"]
         if name in manager:
