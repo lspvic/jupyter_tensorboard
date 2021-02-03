@@ -41,6 +41,9 @@ def load_jupyter_server_extension(nb_app):
             (ujoin(
                 base_url, r"/api/tensorboard/(?P<name>\w+)"),
                 api_handlers.TbInstanceHandler),
+            (ujoin(
+                base_url, r"/font-roboto/.*"),
+                TbFontHandler),
         ]
 
     web_app.add_handlers('.*$', handlers)
@@ -64,6 +67,17 @@ class TensorboardHandler(IPythonHandler):
         manager = self.settings["tensorboard_manager"]
         if name in manager:
             tb_app = manager[name].tb_app
+            WSGIContainer(tb_app)(self.request)
+        else:
+            raise web.HTTPError(404)
+
+class TbFontHandler(IPythonHandler):
+
+    @web.authenticated
+    def get(self):
+        manager = self.settings["tensorboard_manager"]
+        if "1" in manager:
+            tb_app = manager["1"].tb_app
             WSGIContainer(tb_app)(self.request)
         else:
             raise web.HTTPError(404)
