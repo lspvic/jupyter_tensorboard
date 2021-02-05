@@ -3,6 +3,7 @@
 import os
 import sys
 import time
+import inspect
 import itertools
 from collections import namedtuple
 import logging
@@ -12,6 +13,29 @@ import six
 sys.argv = ["tensorboard"]
 
 from tensorboard.backend import application   # noqa
+
+def get_plugins():
+    # Gather up core plugins as well as dynamic plugins.
+    # The way this was done varied several times in the later 1.x series
+    if hasattr(default, 'PLUGIN_LOADERS'): # TB 1.10
+        return default.PLUGIN_LOADERS[:]
+
+    if hasattr(default, 'get_plugins') and inspect.isfunction(default.get_plugins): # TB 1.11+
+        if not ( hasattr(default, 'get_static_plugins') and inspect.isfunction(default.get_static_plugins) ):
+            # in TB 1.11 through 2.2, get_plugins is really just the static plugins
+            plugins = default.get_plugins()
+        else:
+            # in TB 2.3 and later, get_plugins was renamed to get_static_plugins and
+            # a new get_plugins was created that returns the static+dynamic set
+            plugins = default.get_static_plugins()
+
+        if hasattr(default, 'get_dynamic_plugins') and inspect.isfunction(default.get_dynamic_plugins):
+            # in TB 1.14 there are also dynamic plugins that should be included
+            plugins += default.get_dynamic_plugins()
+
+        return plugins
+
+    return None
 
 try:
     # Tensorboard 0.4.x above series
@@ -28,10 +52,9 @@ try:
                         "--reload_interval", str(reload_interval),
                         "--purge_orphaned_data", str(purge_orphaned_data),
                    ]
-            tensorboard = program.TensorBoard()
+            tensorboard = program.TensorBoard(get_plugins())
             tensorboard.configure(argv)
 
-            import inspect
             if ( hasattr(application, 'standard_tensorboard_wsgi') and inspect.isfunction(application.standard_tensorboard_wsgi)):
                 logging.debug("TensorBoard 1.10 or above series detected")
                 standard_tensorboard_wsgi = application.standard_tensorboard_wsgi
