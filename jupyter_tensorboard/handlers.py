@@ -52,6 +52,18 @@ def load_jupyter_server_extension(nb_app):
 
 class TensorboardHandler(IPythonHandler):
 
+
+    def _impl(self, name, path):
+
+        self.request.path = path
+
+        manager = self.settings["tensorboard_manager"]
+        if name in manager:
+            tb_app = manager[name].tb_app
+            WSGIContainer(tb_app)(self.request)
+        else:
+            raise web.HTTPError(404)
+
     @web.authenticated
     def get(self, name, path):
 
@@ -62,14 +74,16 @@ class TensorboardHandler(IPythonHandler):
             self.redirect(uri, permanent=True)
             return
 
-        self.request.path = path
+        self._impl(name, path)
 
-        manager = self.settings["tensorboard_manager"]
-        if name in manager:
-            tb_app = manager[name].tb_app
-            WSGIContainer(tb_app)(self.request)
-        else:
-            raise web.HTTPError(404)
+    @web.authenticated
+    def post(self, name, path):
+
+        if path == "":
+            raise web.HTTPError(403)
+
+        self._impl(name, path)
+
 
 class TbFontHandler(IPythonHandler):
 
