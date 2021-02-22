@@ -6,8 +6,3 @@ node_modules/
 .ipynb_checkpoints
 *.tsbuildinfo
 .idea
-.vscode/*
-*.bundle.*
-node_modules/
-*.tsbuildinfo
-.idea
