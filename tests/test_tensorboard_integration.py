@@ -1,13 +1,30 @@
 # -*- coding:utf-8 -*-
 
+import os
 import sys
 import time
 import logging
 import json
+import binascii
 
 import pytest
 from tornado.testing import AsyncHTTPTestCase
 
+def encode_multipart_formdata(fields):
+    boundary = binascii.hexlify(os.urandom(16)).decode('ascii')
+
+    body = (
+        "".join("--%s\r\n"
+                "Content-Disposition: form-data; name=\"%s\"\r\n"
+                "\r\n"
+                "%s\r\n" % (boundary, field, value)
+                for field, value in fields.items()) +
+        "--%s--\r\n" % boundary
+    )
+
+    content_type = "multipart/form-data; boundary=%s" % boundary
+
+    return body, content_type
 
 @pytest.fixture(scope="session")
 def tf_logs(tmpdir_factory):
@@ -96,6 +113,19 @@ class TestJupyterExtension(AsyncHTTPTestCase):
         assert instance == instance2
 
         response = self.fetch('/tensorboard/1/#graphs')
+        assert response.code == 200
+
+        response = self.fetch(
+            '/tensorboard/1/data/plugin/scalars/tags',
+            method='GET')
+        assert response.code == 200
+
+        body, content_type = encode_multipart_formdata({'tag':'loss', 'runs':['.']})
+        response = self.fetch(
+            '/tensorboard/1/data/plugin/scalars/scalars_multirun',
+            method='POST',
+            body=body,
+            headers={'Content-Type': content_type})
         assert response.code == 200
 
         response = self.fetch('/tensorboard/1/data/plugins_listing')
