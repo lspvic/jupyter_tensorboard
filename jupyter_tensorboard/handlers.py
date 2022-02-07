@@ -70,6 +70,9 @@ class TensorboardHandler(IPythonHandler):
         else:
             raise web.HTTPError(404)
 
+    @web.authenticated
+    def post(self, name, path):
+        return self.get(name, path)
 
 class TensorboardErrorHandler(IPythonHandler):
     pass
