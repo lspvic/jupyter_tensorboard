@@ -215,7 +215,7 @@ class TensorboardManger(dict):
 
         if logdir not in self._logdir_dict:
             purge_orphaned_data = True
-            reload_interval = reload_interval or 30
+            reload_interval = 30 if reload_interval is None else reload_interval
             create_tb_app(
                 logdir=logdir, reload_interval=reload_interval,
                 purge_orphaned_data=purge_orphaned_data)
